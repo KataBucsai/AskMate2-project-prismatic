@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Display question</title>
+
+</head>
+
+<body>
+
+    <h1>Question id: {{ id }}</h1>
+    <h2>
+        Title: {{ title }}
+    </h2>
+    <h3>
+        Message: {{ message }}
+    </h3>
+
+    <form action="/question/{{ id }}/new-answer">
+        <input type="submit" value="Add new Answer" id="add_new_answer" name="add_new_answer">
+        <input type="submit" value="Back to questions" formaction="/">
+    </form>
+
+    <br>
+
+        <table border=1 >
+            <tr>
+                <th>ID</th>
+                <th>Submission time</th>
+                <th>Vote number</th>
+                <th>Question ID</th>
+                <th>Message</th>
+                <th>Image</th>
+                <th>Vote</th>
+            </tr>               
+            {% for row in list_answers %}
+                <tr>   
+                    {% for cell in row %}
+                        <td>{{ cell }}</td>     
+                    {% endfor %}
+                    <td>
+                        <a href="/vote_answer_up?id={{ row[0] }}"><img src="/static/thumbs_up.png" id="{{ row[0] }}" alt="Vote up" width="20"></a>
+                        <a href="/vote_answer_down?id={{ row[0] }}"><img src="/static/thumbs_down.png" id="{{ row[0] }}" alt="Vote down" width="20"></a>
+                    </td>
+                </tr>
+            {% endfor %}     
+        </table>
+
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Questions</title>
+
+</head>
+
+<body>
+
+    <h1>List of questions</h1>
+
+    <form action="/question/new">
+        <input type="submit" value="Add new Question" id="add" name="add_new_question">
+    </form>
+
+    <br>
+
+        <table border=1 >
+            <tr>
+                    <th>ID</th>
+                    <th>Submission time</th>
+                    <th>View number</th>
+                    <th>Vote number</th>
+                    <th>Title</th>
+                    <th>Message</th>
+                    <th>Image</th>
+                    <th>Vote</th>
+            </tr>          
+                {% for row in question_list %}
+                    <tr>
+                        <td> <a href='/question/{{ row[0] }}'>{{ row[0] }}</td>   
+                        {% for i in range(1, 6) %}
+                            <td>{{ row[i] }}</td>     
+                        {% endfor %}
+                            {% if row[6] == '' %}
+                                <td><a href='/add_image/{{row[0]}}'>add image</td>
+                            {% else %}
+                                <td><a href='static/uploads/img/{{row[6]}}' ><img src='static/uploads/img/{{row[6]}}' width = 40px>
+                            {% endif %}
+                            <td>
+                                <a href="/vote_question_up?id={{ row[0] }}"><img src="/static/thumbs_up.png" id="{{ row[0] }}" alt="Vote up" width="20"></a>
+                                <a href="/vote_question_down?id={{ row[0] }}"><img src="/static/thumbs_down.png" id="{{ row[0] }}" alt="Vote down" width="20"></a>
+                            </td>
+                    </tr>
+                {% endfor %}
+        </table>
+
+</body>
+
+</html>

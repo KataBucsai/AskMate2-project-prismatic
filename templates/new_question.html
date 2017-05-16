@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>New question</title>
+
+</head>
+
+<body>
+
+    <h1>New question</h1>
+
+    <form action="/create_new_question" method="post">
+        <p>
+            <label for="new_question_title">Please enter a new question title</label>
+        </p>
+        <p>
+            <textarea name="new_question_title" id="new_question_title" rows="1" cols='33' minlength="10" required></textarea>
+        </p>
+        <br>
+         <p>
+            <label for="new_question_message">Please enter the question message</label>
+        </p>
+        <p>
+            <textarea name="new_question_message" id="new_question_message" rows="10" cols='33' minlength="10" required></textarea>
+        </p>
+        <p>
+            <input type="submit" value="Add new question" id="new_question" name="new_question">
+        </p>
+    </form>
+
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Display question</title>
+
+</head>
+
+<body>
+
+    <h1>Question id: {{ id }}</h1>
+    <h3>
+        {{ message }}
+    </h3>
+
+    <form action="/question/{{ id }}/new-answer">
+        <input type="submit" value="Add new Answer" id="add_new_answer" name="add_new_answer">
+        <input type="submit" value="Back to questions" formaction="/">
+    </form>
+    <form action="\delete\{{ id }}" method="post">
+        <input type="submit" value="Delete question">
+    </form>
+
+    <br>
+        {% if list_answers|length == 0%}
+            <p>There are no answers yet</p>
+        {% else %}
+            <p>Answers:</p>
+        {% endif %}
+        {% set count = [0] %}
+        {% for row in list_answers %}
+            {%if count.append(count.pop() + 1) %}{% endif %}
+            <p>{{ count[0] }}. {{ row[4]}}</p>
+            <p>Votes: 
+                <a href="/vote_answer_up?id={{ row[0] }}"><img src="/static/thumbs_up.png" id="{{ row[0] }}" alt="Vote up" width="20"></a>
+                {{ row[2] }}
+                <a href="/vote_answer_down?id={{ row[0] }}"><img src="/static/thumbs_down.png" id="{{ row[0] }}" alt="Vote down" width="20"></a>
+            </p>
+            <p>
+                Answer date: {{ row[1] }}
+            </p>
+            {% if row[5] == '' %}
+                <td><a href='/add_answer_image/{{row[0]}}'>add image</a></td>
+            {% else %}
+                <td><a href='/static/uploads/img/{{row[5]}}'><img src='/static/uploads/img/{{row[5]}}' width = 40px></a>
+            {% endif %}
+            <hr>
+        {% endfor %}
+        <!--
+        <table border=1 >
+            <tr>
+                <th>ID</th>
+                <th>Submission time</th>
+                <th>Vote number</th>
+                <th>Question ID</th>
+                <th>Message</th>
+                <th>Image</th>
+                <th>Vote</th>
+            </tr>               
+            {% for row in list_answers %}
+                <tr>   
+                    {% for i in range(5) %}
+                        <td>{{ row[i] }}</td>     
+                    {% endfor %}
+                        {% if row[5] == '' %}
+                            <td><a href='/add_answer_image/{{row[0]}}'>add image</td>
+                        {% else %}
+                            <td><a href='/static/uploads/img/{{row[5]}}' ><img src='/static/uploads/img/{{row[5]}}' width = 40px>
+                        {% endif %}
+                    <td>
+                        <a href="/vote_answer_up?id={{ row[0] }}"><img src="/static/thumbs_up.png" id="{{ row[0] }}" alt="Vote up" width="20"></a>
+                        <a href="/vote_answer_down?id={{ row[0] }}"><img src="/static/thumbs_down.png" id="{{ row[0] }}" alt="Vote down" width="20"></a>
+                    </td>
+                </tr>
+            {% endfor %}     
+        </table>
+        -->
+</body>
+
+</html>

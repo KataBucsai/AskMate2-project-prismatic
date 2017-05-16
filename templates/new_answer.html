@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>New answer</title>
+
+</head>
+
+<body>
+
+    <h1>New answer</h1>
+
+    <form action="/create_new_answer" method="post">
+        <p>
+            <label for="new_answer_message">Please enter the answer</label>
+        </p>
+        <p>
+            <textarea name="new_answer_message" id="new_answer_message" rows="10" cols='33' minlength="10" required></textarea>
+        </p>
+            <input type="hidden" name="question_id" value="{{ question_id }}">
+        <p>
+            <input type="submit" value="Add new answer" id="new_answer" name="new_answer">
+        </p>
+    </form>
+
+</body>
+
+</html>
