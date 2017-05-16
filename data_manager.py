@@ -7,13 +7,13 @@ import sys
 
 def init():
     try:
-        connect_str = "dbname='eros' user='eros' host='localhost', password='titok'"
+        connect_str = "dbname='eros' user='eros' host='localhost' password='titok'"
         conn = psycopg2.connect(connect_str)
         conn.autocommit = True
         return conn
     except Exception as e:
         error_message = "Uh oh, can't connect. Invalid dbname, user or password? \n" + str(e)
-        ui.print_error_message(error_message)
+        print(error_message)
         sys.exit()
 
 """
@@ -30,12 +30,25 @@ def get_table_from_file(file_name, indices):
     return table
 """
 
-def get_table_from_table(table_name):
+def get_table_from_table(table_name, order_by=['submission_time', 'DESC']):
+    # TO DO: in some cases the  base64_decoder falis 
+    if table_name == 'question':
+        indices = [4, 5, 6]
+    elif table_name == 'answer':
+        indices = [4, 5]
+    else:
+        indices = []
     conn = init()
     cursor = conn.cursor()
-    cursor.execute("""SELECT * FROM """)
+    cursor.execute("""SELECT * FROM {} ORDER BY {} {};""".format(table_name, order_by[0], order_by[1]))
+    table = cursor.fetchall()
+    # to make list of list from the list of tuple obtained from SQL
+    for row_id, row_value in enumerate(table):
+        table[row_id] = list(row_value)
+    table = base64_decoder(table, indices)
     cursor.close()
     conn.close()
+    return table
 
 
 # write a @table into a file
@@ -53,7 +66,7 @@ def write_table_to_file(file_name, table, indices):
 def base64_decoder(table, indices):
     for row in table:
         for i in indices:
-            row[i] = str(base64.b64decode(row[i]).decode("utf-8"))
+            row[i] = str(base64.b64decode(row[i]).decode("utf-8")) if row[i] != None else ''
     return table
 
 
