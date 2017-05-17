@@ -118,30 +118,23 @@ def vote_question_down():
 
 @app.route('/vote_answer_up')
 def vote_answer_up():
-    file_name = current_file_path + "/data/answer.csv"
-    answer_list = data_manager.get_table_from_file(file_name, (4, 5))
-    for row in answer_list:
-        if row[0] == request.args.get('id'):
-            row[2] = str(int(row[2]) + 1)
-            question_id = row[3]
-            break
-    answer_list_csv_format = data_manager.get_timeform_to_stamp(answer_list)
-    data_manager.write_table_to_file(file_name, answer_list_csv_format, (4, 5))
+    id = request.args.get('id')
+    answer_list = data_manager.get_record_from_sql_db('answer', "id=%s" % (id))
+    vote_number = answer_list[0][2] + 1
+    data_manager.update_record('answer', "vote_number=%s" % (vote_number), "id=%s" % (id))
+    question_id = answer_list[0][3]
     return display_question(question_id, count_view=False)
 
 
 @app.route('/vote_answer_down')
 def vote_answer_down():
-    file_name = current_file_path + "/data/answer.csv"
-    answer_list = data_manager.get_table_from_file(file_name, (4, 5))
-    for row in answer_list:
-        if row[0] == request.args.get('id'):
-            row[2] = str(int(row[2]) - 1)
-            question_id = row[3]
-            break
-    answer_list_csv_format = data_manager.get_timeform_to_stamp(answer_list)
-    data_manager.write_table_to_file(file_name, answer_list_csv_format, (4, 5))
+    id = request.args.get('id')
+    answer_list = data_manager.get_record_from_sql_db('answer', "id=%s" % (id))
+    vote_number = answer_list[0][2] - 1
+    data_manager.update_record('answer', "vote_number=%s" % (vote_number), "id=%s" % (id))
+    question_id = answer_list[0][3]
     return display_question(question_id, count_view=False)
+
 
 @app.route('/delete/<question_id>', methods=['POST'])
 def delete_question(question_id):
