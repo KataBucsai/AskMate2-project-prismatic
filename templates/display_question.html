@@ -11,6 +11,9 @@
 <body>
 
     <h1>Question id: {{ id }}</h1>
+    <h2>
+        {{ title }}
+    </h2>
     <h3>
         {{ message }}
     </h3>
@@ -22,7 +25,14 @@
     <form action="\delete\{{ id }}" method="post">
         <input type="submit" value="Delete question">
     </form>
-
+    <br>
+    <p style="display: inline;">Tags:</p>
+        {% for row in tag_list %}
+            <p style="display: inline;" class="delete_tag">x</p><p style="background-color: #aac4ef; display: inline; padding: 2px;">{{ row[0] }}</p>
+        {% endfor %}
+    <form action="\question\{{ id }}\new-tag" method="post">
+        <input type="submit" value="Add new tag">
+    </form>
     <br>
         {% if list_answers|length == 0%}
             <p>There are no answers yet</p>
