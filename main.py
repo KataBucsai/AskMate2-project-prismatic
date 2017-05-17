@@ -100,27 +100,19 @@ def add_answer_image_post(id):
 
 @app.route('/vote_question_up')
 def vote_question_up():
-    file_name = current_file_path + "/data/question.csv"
-    question_list = data_manager.get_table_from_file(file_name, (4, 5, 6))
-    for row in question_list:
-        if row[0] == request.args.get('id'):
-            row[3] = str(int(row[3]) + 1)
-            break
-    question_list_csv_format = data_manager.get_timeform_to_stamp(question_list)
-    data_manager.write_table_to_file(file_name, question_list_csv_format, (4, 5, 6))
+    id = request.args.get('id')
+    question_list = data_manager.get_record_from_sql_db('question', "id=%s" % (id))
+    vote_number = question_list[0][3] + 1
+    data_manager.update_record('question', "vote_number=%s" % (vote_number), "id=%s" % (id))
     return redirect('/')
 
 
 @app.route('/vote_question_down')
 def vote_question_down():
-    file_name = current_file_path + "/data/question.csv"
-    question_list = data_manager.get_table_from_file(file_name, (4, 5, 6))
-    for row in question_list:
-        if row[0] == request.args.get('id'):
-            row[3] = str(int(row[3]) - 1)
-            break
-    question_list_csv_format = data_manager.get_timeform_to_stamp(question_list)
-    data_manager.write_table_to_file(file_name, question_list_csv_format, (4, 5, 6))
+    id = request.args.get('id')
+    question_list = data_manager.get_record_from_sql_db('question', "id=%s" % (id))
+    vote_number = question_list[0][3] - 1
+    data_manager.update_record('question', "vote_number=%s" % (vote_number), "id=%s" % (id))
     return redirect('/')
 
 
