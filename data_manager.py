@@ -66,7 +66,6 @@ def add_item_to_answer_db(table, request):
          str(datetime.now())[:-7], 0, request['question_id'], request['new_answer_message']))
 
 def update_record(table_name, set_value, condition):
-    print("""UPDATE {} SET {} WHERE {}""".format(table_name, set_value, condition))
     init("""UPDATE {} SET {} WHERE {}""".format(table_name, set_value, condition))
 
 
@@ -83,12 +82,14 @@ def add_item_to_answer_table(table, request):
     return table
 
 
-def delete_item_from_table(list_table, question_id):
-    for row_id, row_value in enumerate(list_table):
+def delete_record(table_name, condition):
+    print("""DELETE FROM {} WHERE {};""".format(table_name, condition))
+    init("""DELETE FROM {} WHERE {};""".format(table_name, condition))
+    '''for row_id, row_value in enumerate(list_table):
         if row_value[0] == question_id:
             del(list_table[row_id])
             break
-    return list_table
+    return list_table'''
 
 
 

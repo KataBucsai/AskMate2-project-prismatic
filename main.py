@@ -138,22 +138,8 @@ def vote_answer_down():
 
 @app.route('/delete/<question_id>', methods=['POST'])
 def delete_question(question_id):
-    file_name = current_file_path + "/data/question.csv"
-    question_list = data_manager.get_table_from_file(file_name, (4, 5, 6))
-    question_list_csv_format = data_manager.get_timeform_to_stamp(question_list)
-    question_list_csv_format = data_manager.delete_item_from_table(question_list_csv_format, question_id)
-    data_manager.write_table_to_file(file_name, question_list_csv_format, (4, 5, 6))
-
-    file_name = current_file_path + "/data/answer.csv"
-    answer_list = data_manager.get_table_from_file(file_name, (4, 5))
-    question_id_list = []
-    for row in answer_list:
-        if row[3] == question_id:
-            question_id_list.append(row[0])
-    answer_list_csv_format = data_manager.get_timeform_to_stamp(answer_list)
-    for question_id_to_delete in question_id_list:
-        answer_list_csv_format = data_manager.delete_item_from_table(answer_list_csv_format, question_id_to_delete)
-    data_manager.write_table_to_file(file_name, answer_list_csv_format, (4, 5))
+    data_manager.delete_record('answer', "question_id=%s" % (question_id))
+    data_manager.delete_record('question', "id=%s" % (question_id))
     return redirect('/')
 
 
