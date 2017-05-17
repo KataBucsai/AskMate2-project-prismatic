@@ -13,20 +13,18 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def list_questions():
-    #file_name = current_file_path + "/data/question.csv"
-    #question_list = data_manager.get_table_from_file(file_name, (4, 5, 6))
-    #question_list = data_manager.table_sort(question_list, 1, True)
-    question_list = data_manager.get_table_from_table('question')
+    question_list = data_manager.get_table_from_sql_db('question')
     return render_template('list_questions.html', question_list=question_list)
 
 
 @app.route('/create_new_question', methods=['POST'])
 def create_new_question():
-    file_name = current_file_path + "/data/question.csv"
+    """file_name = current_file_path + "/data/question.csv"
     question_list = data_manager.get_table_from_file(file_name, (4, 5, 6))
     question_list_csv_format = data_manager.get_timeform_to_stamp(question_list)
     question_list_csv_format = data_manager.add_item_to_table(question_list_csv_format, request.form)
-    data_manager.write_table_to_file(file_name, question_list_csv_format, (4, 5, 6))
+    data_manager.write_table_to_file(file_name, question_list_csv_format, (4, 5, 6))"""
+    data_manager.add_item_to_sql_db('question', request.form)
     return redirect('/')
 
 

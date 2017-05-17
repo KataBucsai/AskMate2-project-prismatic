@@ -29,7 +29,7 @@
                 Question date: {{ row[1] }}
             </p>
             <p>
-                {% if row[6] == '' %}
+                {% if row[6] == None %}
                     <td><a href='/add_image/{{row[0]}}'>Add image</td>
                 {% else %}
                     <td><a href='static/uploads/img/{{row[6]}}' ><img src='static/uploads/img/{{row[6]}}' width = 40px>
