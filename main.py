@@ -19,11 +19,6 @@ def list_questions():
 
 @app.route('/create_new_question', methods=['POST'])
 def create_new_question():
-    """file_name = current_file_path + "/data/question.csv"
-    question_list = data_manager.get_table_from_file(file_name, (4, 5, 6))
-    question_list_csv_format = data_manager.get_timeform_to_stamp(question_list)
-    question_list_csv_format = data_manager.add_item_to_table(question_list_csv_format, request.form)
-    data_manager.write_table_to_file(file_name, question_list_csv_format, (4, 5, 6))"""
     data_manager.add_item_to_sql_db('question', request.form)
     return redirect('/')
 
@@ -43,25 +38,7 @@ def display_question(id, count_view=True):
     data_manager.update_record('question', "view_number=%s" % (view_number), "id=%s" % (id))
     answer_list = data_manager.get_record_from_sql_db('answer', "question_id=%s" % (id))
     return render_template('display_question.html', id=id, title=title, message=message, list_answers=answer_list)# view counter += 1
-    """question_file_name = current_file_path + "/data/question.csv"
-    question_list = data_manager.get_table_from_file(question_file_name, (4, 5, 6))
-    for row in question_list:
-        if row[0] == id:
-            title = row[4]
-            message = row[5]
-            if count_view:
-                row[2] = str(int(row[2])+1)  
-            question_list = data_manager.get_timeform_to_stamp(question_list)
-            data_manager.write_table_to_file(question_file_name, question_list, (4, 5, 6))
-            break
-    answer_file_name = current_file_path + "/data/answer.csv"
-    answer_list = data_manager.get_table_from_file(answer_file_name, (4, 5))
-    list_answers = []
-    for row in answer_list:
-        if row[3] == id:
-            list_answers.append(row)
-    return render_template('display_question.html', id=id, title=title, message=message, list_answers=list_answers)
-    """
+    
 
 @app.route('/question/<question_id>/new-answer')
 def new_answer(question_id):
@@ -70,11 +47,7 @@ def new_answer(question_id):
 
 @app.route('/create_new_answer', methods=['POST'])
 def add_new_answer():
-    file_name = current_file_path + "/data/answer.csv"
-    answer_list = data_manager.get_table_from_file(file_name, (4, 5))
-    answer_list_csv_format = data_manager.get_timeform_to_stamp(answer_list)
-    answer_list_csv_format = data_manager.add_item_to_answer_table(answer_list_csv_format, request.form)
-    data_manager.write_table_to_file(file_name, answer_list_csv_format, (4, 5))
+    data_manager.add_item_to_answer_db('answer', request.form)
     return redirect('/question/' + request.form["question_id"])
 
 

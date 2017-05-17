@@ -62,6 +62,11 @@ def add_item_to_sql_db(table, request):
          str(datetime.now())[:-7], 0, 0, request['new_question_title'], request['new_question_message']))
 
 
+def add_item_to_answer_db(table, request):
+    init("""INSERT INTO {} ({}, {}, {}, {}) VALUES ('{}', {}, {}, '{}');""".format(table, 
+         'submission_time', 'vote_number', 'question_id', 'message',
+         str(datetime.now())[:-7], 0, request['question_id'], request['new_answer_message']))
+
 def update_record(table_name, set_value, condition):
     init("""UPDATE {} SET {} WHERE {}""".format(table_name, set_value, condition))
 
