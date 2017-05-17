@@ -28,6 +28,10 @@ def get_table_from_sql_db(table_name, order_by=['submission_time', 'DESC']):
     result = init("""SELECT * FROM {} ORDER BY {} {} LIMIT 5;""".format(table_name, order_by[0], order_by[1]))
     return result
 
+def get_record_from_sql_db(table_name, condition):
+    result = init("""SELECT * FROM {} WHERE {};""".format(table_name, condition))
+    return result
+
 
 # write a @table into a file
 #
@@ -56,14 +60,10 @@ def add_item_to_sql_db(table, request):
     init("""INSERT INTO {} ({}, {}, {}, {}, {}) VALUES ('{}', {}, {}, '{}', '{}');""".format(table, 
          'submission_time', 'view_number', 'vote_number', 'title', 'message',
          str(datetime.now())[:-7], 0, 0, request['new_question_title'], request['new_question_message']))
-    """table.append([str(max_id+1),
-                 get_time_stamp(),
-                 '0',
-                 '0',
-                 request['new_question_title'],
-                 request['new_question_message'],
-                 ''])"""
 
+
+def update_record(table_name, set_value, condition):
+    init("""UPDATE {} SET {} WHERE {}""".format(table_name, set_value, condition))
 
 
 def add_item_to_answer_table(table, request):

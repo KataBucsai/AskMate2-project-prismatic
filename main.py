@@ -35,8 +35,15 @@ def new_question():
 
 @app.route('/question/<id>')
 def display_question(id, count_view=True):
-    # view counter += 1
-    question_file_name = current_file_path + "/data/question.csv"
+    question_list = data_manager.get_record_from_sql_db('question', "id=%s" % (id))
+    print(question_list)
+    title = question_list[0][4]
+    message = question_list[0][5]
+    view_number = question_list[0][2] + 1
+    data_manager.update_record('question', "view_number=%s" % (view_number), "id=%s" % (id))
+    answer_list = data_manager.get_record_from_sql_db('answer', "question_id=%s" % (id))
+    return render_template('display_question.html', id=id, title=title, message=message, list_answers=answer_list)# view counter += 1
+    """question_file_name = current_file_path + "/data/question.csv"
     question_list = data_manager.get_table_from_file(question_file_name, (4, 5, 6))
     for row in question_list:
         if row[0] == id:
@@ -54,7 +61,7 @@ def display_question(id, count_view=True):
         if row[3] == id:
             list_answers.append(row)
     return render_template('display_question.html', id=id, title=title, message=message, list_answers=list_answers)
-
+    """
 
 @app.route('/question/<question_id>/new-answer')
 def new_answer(question_id):
