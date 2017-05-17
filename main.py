@@ -31,7 +31,6 @@ def new_question():
 @app.route('/question/<id>')
 def display_question(id, count_view=True):
     question_list = data_manager.get_record_from_sql_db('question', "id=%s" % (id))
-    print(question_list)
     title = question_list[0][4]
     message = question_list[0][5]
     view_number = question_list[0][2] + 1
@@ -56,66 +55,47 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/add_image/<id>', methods=['GET', 'POST'])
-def add_image(id):
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # filename-to-table
-            question_file_name = current_file_path + "/data/question.csv"
-            question_list = data_manager.get_table_from_file(question_file_name, (4, 5, 6))
-            for row in question_list:
-                if row[0] == id:
-                    row[6] = '/images/' + filename
-                    break
-            # update csv
-            question_list_csv_format = data_manager.get_timeform_to_stamp(question_list)
-            # question_list_csv_format = data_manager.add_item_to_table(question_list_csv_format, request.form)
-            data_manager.write_table_to_file(question_file_name, question_list_csv_format, (4, 5, 6))
-            return redirect('/')
+@app.route('/add_image/<id>', methods=['GET'])
+def add_image_get(id):
     return render_template('file_upload.html')
 
 
-@app.route('/add_answer_image/<id>', methods=['GET', 'POST'])
-def add_answer_image(id):
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # filename-to-table
-            answer_file_name = current_file_path + "/data/answer.csv"
-            answer_list = data_manager.get_table_from_file(answer_file_name, (4, 5))
-            for row in answer_list:
-                if row[0] == id:
-                    row[5] = '/images/' + filename
-                    break
-            # update csv
-            answer_list_csv_format = data_manager.get_timeform_to_stamp(answer_list)
-            # question_list_csv_format = data_manager.add_item_to_table(question_list_csv_format, request.form)
-            data_manager.write_table_to_file(answer_file_name, answer_list_csv_format, (4, 5))
-            return display_question(row[3], count_view=False)
+@app.route('/add_image/<id>', methods=['POST'])
+def add_image_post(id):
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        data_manager.update_record('question', "image='/images/%s'" % (filename), "id=%s" % (id))
+        return redirect('/')
+
+@app.route('/add_answer_image/<id>', methods=['GET'])
+def add_answer_image_get(id):
     return render_template('file_upload.html')
+
+
+@app.route('/add_answer_image/<id>', methods=['POST'])
+def add_answer_image_post(id):
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        data_manager.update_record('answer', "image='/images/%s'" % (filename), "id=%s" % (id))
+        answer = data_manager.get_record_from_sql_db('answer', "id=%s" % (id))
+        question_id = answer[0][3]
+        return display_question(question_id, count_view=False)
 
 
 @app.route('/vote_question_up')

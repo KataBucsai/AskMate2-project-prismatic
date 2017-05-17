@@ -6,7 +6,6 @@ import sys
 
 
 def init(command):
-    print(command)
     try:
         connect_str = "dbname='eros' user='eros' host='localhost' password='titok'"
         conn = psycopg2.connect(connect_str)
@@ -46,7 +45,6 @@ def write_table_to_file(file_name, table, indices):
 
 
 def get_time_stamp():
-    # print(str(int(time.time()))) 
     return str(int(time.time()))
 
 
@@ -68,6 +66,7 @@ def add_item_to_answer_db(table, request):
          str(datetime.now())[:-7], 0, request['question_id'], request['new_answer_message']))
 
 def update_record(table_name, set_value, condition):
+    print("""UPDATE {} SET {} WHERE {}""".format(table_name, set_value, condition))
     init("""UPDATE {} SET {} WHERE {}""".format(table_name, set_value, condition))
 
 
