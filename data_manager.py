@@ -4,7 +4,7 @@ import sys
 
 def handle_database(command):
     try:
-        connect_str = "dbname='kata' user='kata' host='localhost' password='berendel'"
+        connect_str = "dbname='en' user='en' host='localhost'"
         conn = psycopg2.connect(connect_str)
         conn.autocommit = True
         cursor = conn.cursor()

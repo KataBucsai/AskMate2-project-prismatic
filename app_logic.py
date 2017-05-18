@@ -116,3 +116,15 @@ def add_new_tag(question_id):
         if not ui.get_record_from_sql_db('question_tag', "question_id=%s AND tag_id=%s" % (question_id, existing_tag_id_list[0][0])):
             ui.add_item_to_question_tag('question_tag', question_id, existing_tag_id_list[0][0])
     return redirect('/question/' + question_id)
+
+
+@app.route('/search', methods=['GET'])
+def search():
+    search = request.args.get('q').replace(' ', '%')
+    search_result = ui.search_in_db("*", "question", "title LIKE '%{}%'".format(search))
+    print(search_result)
+    question_id_from_answers = ui.search_in_db("question_id", "answer", "message LIKE '%{}%'".format(search))
+    for item in question_id_from_answers:
+        print(item[0])
+    # question_list = ui.search_in_db('question', 'title', "LIKE '%{}%' UNION ALL SELECT * FROM question WHERE id = (SELECT question_id FROM answer WHERE message LIKE '%{}%')".format(search, search))
+    return render_template('search_results.html', question_list=question_list)
