@@ -85,6 +85,10 @@ def vote_answer_down():
 
 @app.route('/delete/<question_id>', methods=['POST'])
 def delete_question(question_id):
+    answer_list = ui.get_record_from_sql_db('answer', "question_id=%s" % (question_id))
+    for record in answer_list:
+        # print(record[0])
+        ui.delete_record('comment', "answer_id=%s" % (record[0]))
     ui.delete_record('answer', "question_id=%s" % (question_id))
     ui.delete_record('question_tag', "question_id=%s" % (question_id))
     ui.delete_record('comment', "question_id=%s" % (question_id))
