@@ -17,17 +17,6 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app_logic.app.route('/question/<question_id>/new-comment')
-def new_comment(question_id):
-    return render_template('new_comment.html', question_id=question_id)
-
-
-@app_logic.app.route('/create_new_comment', methods=['POST'])
-def add_new_comment():
-    ui.add_item_to_comment_db('comment', request.form)
-    return app_logic.redirect('/question/' + request.form["question_id"])
-
-
 @app_logic.app.route('/add_image/<id>', methods=['GET'])
 def add_image_get(id):
     return render_template('file_upload.html')

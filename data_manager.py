@@ -17,7 +17,7 @@ def getDbConfig(settings):
     elif is_test:
         return db_settings['test']
     elif is_prod:
-        return db_settings['prod']  
+        return db_settings['prod']
     return dict()
 
 
@@ -38,5 +38,3 @@ def handle_database(command):
         error_message = "Uh oh, can't connect. Invalid dbname, user or password? \n" + str(e)
         print(error_message)
         sys.exit()
-
-

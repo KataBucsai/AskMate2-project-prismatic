@@ -5,6 +5,7 @@
 <head>
 
     <title>New comment</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
 
 </head>
 
@@ -12,14 +13,22 @@
 
     <h1>New comment</h1>
 
-    <form action="/create_new_comment" method="post">
+    <form {% if comment_type == "question" %} 
+            action="/create_new_comment" method="post"
+          {% else %}
+            action="/create_new_answer_comment" method="post"
+          {% endif %}>
         <p>
             <label for="new_comment_message">Please enter the comment</label>
         </p>
         <p>
             <textarea name="new_comment_message" id="new_comment_message" rows="10" cols='33' minlength="10" required></textarea>
         </p>
+        {% if comment_type == "question" %}
             <input type="hidden" name="question_id" value="{{ question_id }}">
+        {% else %}
+            <input type="hidden" name="answer_id" value="{{ answer_id }}">
+        {% endif %}
         <p>
             <input type="submit" value="Add new comment" id="new_comment" name="new_comment">
         </p>
