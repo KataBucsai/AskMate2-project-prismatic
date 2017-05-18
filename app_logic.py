@@ -134,3 +134,14 @@ def search():
         print(item[0])
     # question_list = ui.search_in_db('question', 'title', "LIKE '%{}%' UNION ALL SELECT * FROM question WHERE id = (SELECT question_id FROM answer WHERE message LIKE '%{}%')".format(search, search))
     return render_template('search_results.html', question_list=question_list)
+
+
+@app.route('/delete_tag/<question_id>')
+def delete_tag(question_id):
+    tag_name = request.args.get('tag_name')
+    tag_id = ui.get_record_from_sql_db('tag', "name='%s'" % (tag_name))[0][0]
+    ui.delete_record('question_tag', "question_id=%s AND tag_id=%s" % (question_id, tag_id))
+    tag_id_in_question_tag = ui.get_record_from_sql_db('question_tag', "tag_id=%s" % (tag_id))
+    if not tag_id_in_question_tag:
+        ui.delete_record('tag', "id=%s" % (tag_id))
+    return redirect('/question/' + question_id)
