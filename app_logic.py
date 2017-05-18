@@ -38,7 +38,6 @@ def display_question(id, count_view=True):
     answer_comment_list = []
     for answer in answer_list:
         answer_comment_list.append(ui.get_record_from_sql_db('comment', "answer_id=%s" % (answer[0])))
-    print(answer_comment_list)
     # SELECT tag.name FROM tag JOIN question_tag ON question_tag.tag_id=tag.id WHERE question_tag.question_id=1;
     tag_list = ui.get_record_from_tag('tag', 'question_tag ON question_tag.tag_id=tag.id', "question_tag.question_id=%s" % (id))
     return render_template('display_question.html', id=id, title=title, 
@@ -133,9 +132,6 @@ def add_new_tag(question_id):
 def search():
     search = request.args.get('q').replace(' ', '%')
     search_results = ui.search_in_db("*", "question FULL JOIN answer ON question.id = answer.question_id ", "question.title LIKE '%{}%' OR answer.message LIKE '%{}%'".format(search, search))
-    print()
-    print(search_results)
-    print()
     return render_template('search_results.html', search_results=search_results)
 
 
