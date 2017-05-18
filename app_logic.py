@@ -30,10 +30,16 @@ def display_question(id, count_view=True):
     ui.update_record('question', "view_number=%s" % (view_number), "id=%s" % (id))
     answer_list = ui.get_record_from_sql_db('answer', "question_id=%s" % (id))
     comment_list = ui.get_record_from_sql_db('comment', "question_id=%s" % (id))
+    answer_comment_list = []
+    for answer in answer_list:
+        answer_comment_list.append(ui.get_record_from_sql_db('comment', "answer_id=%s" % (answer[0])))
+    print(answer_comment_list)
     # SELECT tag.name FROM tag JOIN question_tag ON question_tag.tag_id=tag.id WHERE question_tag.question_id=1;
     tag_list = ui.get_record_from_tag('tag', 'question_tag ON question_tag.tag_id=tag.id', "question_tag.question_id=%s" % (id))
     return render_template('display_question.html', id=id, title=title, 
-                           message=message, list_answers=answer_list, list_comments=comment_list, tag_list=tag_list)
+                           message=message, list_answers=answer_list, 
+                           list_comments=comment_list, list_answer_comments=answer_comment_list, 
+                           tag_list=tag_list)
 
 
 @app.route('/question/<question_id>/new-answer')
