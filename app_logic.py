@@ -120,10 +120,11 @@ def add_new_tag(question_id):
 @app.route('/search', methods=['GET'])
 def search():
     search = request.args.get('q').replace(' ', '%')
-    search_results = ui.search_in_db("*", "question FULL JOIN answer ON question.id = answer.question_id ", "question.title LIKE '%{}%' OR answer.message LIKE '%{}%'".format(search, search))
-    print()
-    print(search_results)
-    print()
+    # SELECT *, replace(title, 'test', '<strong>test</strong>') FROM question FULL JOIN answer ON question.id=answer.question_id WHERE title LIKE '%test%' OR answer.message LIKE '%test%';
+    search_results = ui.search_in_db("SELECT *, replace(title, '{}', '<mark>{}</mark>') AS highlighted_title, replace(answer.message, '{}', '<mark>{}</mark>') AS highlighted_message FROM question FULL JOIN answer ON question.id=answer.question_id WHERE title LIKE '%{}%' OR answer.message LIKE '%{}%'".format(search, search, search, search, search, search))
+    for result in search_results:
+        print(result)
+    # "*", "question FULL JOIN answer ON question.id = answer.question_id ", "question.title LIKE '%{}%' OR answer.message LIKE '%{}%'".format(search, search))
     return render_template('search_results.html', search_results=search_results)
 
 
