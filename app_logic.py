@@ -29,9 +29,11 @@ def display_question(id, count_view=True):
     view_number = question_list[0][2] + 1
     ui.update_record('question', "view_number=%s" % (view_number), "id=%s" % (id))
     answer_list = ui.get_record_from_sql_db('answer', "question_id=%s" % (id))
+    comment_list = ui.get_record_from_sql_db('comment', "question_id=%s" % (id))
     # SELECT tag.name FROM tag JOIN question_tag ON question_tag.tag_id=tag.id WHERE question_tag.question_id=1;
     tag_list = ui.get_record_from_tag('tag', 'question_tag ON question_tag.tag_id=tag.id', "question_tag.question_id=%s" % (id))
-    return render_template('display_question.html', id=id, title=title, message=message, list_answers=answer_list, tag_list=tag_list)
+    return render_template('display_question.html', id=id, title=title, 
+                           message=message, list_answers=answer_list, list_comments=comment_list, tag_list=tag_list)
 
 
 @app.route('/question/<question_id>/new-answer')
@@ -85,6 +87,10 @@ def vote_answer_down():
 
 @app.route('/delete/<question_id>', methods=['POST'])
 def delete_question(question_id):
+    answer_list = ui.get_record_from_sql_db('answer', "question_id=%s" % (question_id))
+    for record in answer_list:
+        # print(record[0])
+        ui.delete_record('comment', "answer_id=%s" % (record[0]))
     ui.delete_record('answer', "question_id=%s" % (question_id))
     ui.delete_record('question_tag', "question_id=%s" % (question_id))
     ui.delete_record('comment', "question_id=%s" % (question_id))

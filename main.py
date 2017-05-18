@@ -25,7 +25,7 @@ def new_comment(question_id):
 @app_logic.app.route('/create_new_comment', methods=['POST'])
 def add_new_comment():
     ui.add_item_to_comment_db('comment', request.form)
-    return redirect('/question/' + request.form["question_id"])
+    return app_logic.redirect('/question/' + request.form["question_id"])
 
 
 @app_logic.app.route('/add_image/<id>', methods=['GET'])
