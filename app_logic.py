@@ -121,6 +121,9 @@ def add_new_tag(question_id):
 def search():
     search = request.args.get('q').replace(' ', '%')
     search_results = ui.search_in_db("*", "question FULL JOIN answer ON question.id = answer.question_id ", "question.title LIKE '%{}%' OR answer.message LIKE '%{}%'".format(search, search))
+    print()
+    print(search_results)
+    print()
     return render_template('search_results.html', search_results=search_results)
 
 
