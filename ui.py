@@ -3,8 +3,9 @@ import psycopg2
 from data_manager import handle_database
 
 
-def get_table_from_sql_db(table_name, limit, order_by=['submission_time', 'DESC']): 
-    result = handle_database("""SELECT * FROM {} ORDER BY {} {}{};""".format(table_name, order_by[0], order_by[1], limit))
+def get_table_from_sql_db(table_name, limit, order_by=['submission_time', 'DESC']):
+    result = handle_database("""SELECT * FROM {} ORDER BY {} {}{};""".format(table_name,
+                                                                             order_by[0], order_by[1], limit))
     return result
 
 
@@ -30,7 +31,7 @@ def get_tag_id_by_name(tag_name):
 
 
 def add_item_to_sql_db(table, request):
-    handle_database("""INSERT INTO {} ({}, {}, {}, {}, {}) VALUES ('{}', {}, {}, '{}', '{}');""".format(table, 
+    handle_database("""INSERT INTO {} ({}, {}, {}, {}, {}) VALUES ('{}', {}, {}, '{}', '{}');""".format(table,
                     'submission_time', 'view_number', 'vote_number', 'title', 'message',
                     str(datetime.now())[:-7], 0, 0, request['new_question_title'], request['new_question_message']))
 
@@ -42,7 +43,7 @@ def add_item_to_answer_db(table, request):
 
 
 def add_item_to_comment_db(table, request):
-    #check_request = request
+    # check_request = request
     if "question_id" in request:
         handle_database("""INSERT INTO {} ({}, {}, {}, {}) VALUES ({}, {}, '{}', '{}');""".format(table,
                         'question_id', 'answer_id', 'message', 'submission_time',
@@ -51,6 +52,7 @@ def add_item_to_comment_db(table, request):
         handle_database("""INSERT INTO {} ({}, {}, {}) VALUES ({}, '{}', '{}');""".format(table,
                         'answer_id', 'message', 'submission_time',
                         request['answer_id'], request['new_comment_message'], str(datetime.now())[:-7]))
+
 
 def add_item_to_question_tag(table, question_id, tag_id):
     handle_database("""INSERT INTO {} ({}, {}) VALUES ({}, {});""".format(table,

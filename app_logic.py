@@ -39,10 +39,11 @@ def display_question(id, count_view=True):
     for answer in answer_list:
         answer_comment_list.append(ui.get_record_from_sql_db('comment', "answer_id=%s" % (answer[0])))
     # SELECT tag.name FROM tag JOIN question_tag ON question_tag.tag_id=tag.id WHERE question_tag.question_id=1;
-    tag_list = ui.get_record_from_tag('tag', 'question_tag ON question_tag.tag_id=tag.id', "question_tag.question_id=%s" % (id))
-    return render_template('display_question.html', id=id, title=title, 
-                           message=message, list_answers=answer_list, 
-                           list_comments=comment_list, list_answer_comments=answer_comment_list, 
+    tag_list = ui.get_record_from_tag('tag', 'question_tag ON question_tag.tag_id=tag.id',
+                                      "question_tag.question_id=%s" % (id))
+    return render_template('display_question.html', id=id, title=title,
+                           message=message, list_answers=answer_list,
+                           list_comments=comment_list, list_answer_comments=answer_comment_list,
                            tag_list=tag_list)
 
 
@@ -119,11 +120,13 @@ def add_new_tag(question_id):
         if not ui.get_record_from_sql_db('tag', "name='%s'" % (request.form['new_tag'])):
             ui.add_item_to_tag('tag', request.form['new_tag'])
         new_tag_id_list = ui.get_tag_id_by_name(request.form['new_tag'])
-        if not ui.get_record_from_sql_db('question_tag', "question_id=%s AND tag_id=%s" % (question_id, new_tag_id_list[0][0])):
+        if not ui.get_record_from_sql_db('question_tag',
+                                         "question_id=%s AND tag_id=%s" % (question_id, new_tag_id_list[0][0])):
             ui.add_item_to_question_tag('question_tag', question_id, new_tag_id_list[0][0])
     else:
         existing_tag_id_list = ui.get_tag_id_by_name(request.form['existing_tag'])
-        if not ui.get_record_from_sql_db('question_tag', "question_id=%s AND tag_id=%s" % (question_id, existing_tag_id_list[0][0])):
+        if not ui.get_record_from_sql_db('question_tag',
+                                         "question_id=%s AND tag_id=%s" % (question_id, existing_tag_id_list[0][0])):
             ui.add_item_to_question_tag('question_tag', question_id, existing_tag_id_list[0][0])
     return redirect('/question/' + question_id)
 
@@ -131,7 +134,8 @@ def add_new_tag(question_id):
 @app.route('/search', methods=['GET'])
 def search():
     search = request.args.get('q').replace(' ', '%')
-    search_results = ui.search_in_db("*", "question FULL JOIN answer ON question.id = answer.question_id ", "question.title LIKE '%{}%' OR answer.message LIKE '%{}%'".format(search, search))
+    search_results = ui.search_in_db("*", "question FULL JOIN answer ON question.id = answer.question_id ",
+                                     "question.title LIKE '%{}%' OR answer.message LIKE '%{}%'".format(search, search))
     return render_template('search_results.html', search_results=search_results)
 
 
