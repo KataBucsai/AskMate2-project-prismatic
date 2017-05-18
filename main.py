@@ -35,7 +35,7 @@ def add_image_post(id):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         ui.update_record('question', "image='/images/%s'" % (filename), "id=%s" % (id))
-        return redirect('/')
+        return app_logic.redirect('/')
 
 
 @app_logic.app.route('/add_answer_image/<id>', methods=['GET'])
@@ -58,7 +58,7 @@ def add_answer_image_post(id):
         ui.update_record('answer', "image='/images/%s'" % (filename), "id=%s" % (id))
         answer = ui.get_record_from_sql_db('answer', "id=%s" % (id))
         question_id = answer[0][3]
-        return display_question(question_id, count_view=False)
+        return app_logic.display_question(question_id, count_view=False)
 
 
 if __name__ == '__main__':
