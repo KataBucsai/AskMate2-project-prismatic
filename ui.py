@@ -3,8 +3,8 @@ import psycopg2
 from data_manager import handle_database
 
 
-def get_table_from_sql_db(table_name, order_by=['submission_time', 'DESC']): 
-    result = handle_database("""SELECT * FROM {} ORDER BY {} {} LIMIT 5;""".format(table_name, order_by[0], order_by[1]))
+def get_table_from_sql_db(table_name, limit, order_by=['submission_time', 'DESC']): 
+    result = handle_database("""SELECT * FROM {} ORDER BY {} {}{};""".format(table_name, order_by[0], order_by[1], limit))
     return result
 
 

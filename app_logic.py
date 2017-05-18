@@ -4,9 +4,14 @@ import ui
 app = Flask(__name__)
 
 
+@app.route('/list')
 @app.route('/')
 def list_questions():
-    question_list = ui.get_table_from_sql_db('question')
+    if 'list' in str(request):
+        limit = ''
+    else:
+        limit = ' LIMIT 5'
+    question_list = ui.get_table_from_sql_db('question', limit)
     return render_template('list_questions.html', question_list=question_list)
 
 
