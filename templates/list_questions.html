@@ -10,6 +10,16 @@
 
 <body>
 
+    <form action="/search" method="GET">
+        <p>
+            <label for="search">Search in questions and answers:</label>
+        </p>
+        <p>
+            <textarea id="q" name="q" rows="1" cols='33' required></textarea>
+            <input type="submit" value="Search" >
+        </p>
+    </form>   
+
     <h1>List of questions</h1>
 
     <form action="/question/new">
