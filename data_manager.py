@@ -23,12 +23,8 @@ def getDbConfig(settings):
 
 def handle_database(command):
     try:
-<<<<<<< HEAD
-        connect_str = "dbname='en' user='en' host='localhost'"
-=======
         config_data = getDbConfig(config.getSettings())
         connect_str = "dbname='" + config_data['db_name'] + "' user='" + config_data['user'] + "' host='" + config_data['host'] + "' password='" + config_data['password'] + "'"
->>>>>>> 7b83dc52816562458c16aa40750f968fcfce681e
         conn = psycopg2.connect(connect_str)
         conn.autocommit = True
         cursor = conn.cursor()

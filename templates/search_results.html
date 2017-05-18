@@ -16,7 +16,7 @@
         <input type="submit" value="Back to questions" >
     </form>
 
-        {% for row in question_list %}
+        {% for row in search_results %}
             <h4><a href='/question/{{ row[0] }}'>{{ row[4] }}</a></h4>
             <p>Votes: 
                 <a href="/vote_question_up?id={{ row[0] }}"><img src="/static/thumbs_up.png" id="{{ row[0] }}" alt="Vote up" width="20"></a>
