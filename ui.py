@@ -44,7 +44,7 @@ def add_item_to_answer_db(table, request):
 def add_item_to_comment_db(table, request):
     handle_database("""INSERT INTO {} ({}, {}, {}, {}) VALUES ({}, {}, '{}', '{}');""".format(table,
                     'question_id', 'answer_id', 'message', 'submission_time',
-                    request['question_id'], None, request['new_comment_message'], str(datetime.now())[:-7]))
+                    request['question_id'], 'NULL', request['new_comment_message'], str(datetime.now())[:-7]))
 
 
 def add_item_to_question_tag(table, question_id, tag_id):
