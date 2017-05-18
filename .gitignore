@@ -1,3 +1,6 @@
+# Private config is not uploaded. Create your own from private_config_template.py
+private_config.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
