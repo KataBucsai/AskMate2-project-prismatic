@@ -43,7 +43,6 @@ def add_item_to_answer_db(table, request):
 
 
 def add_item_to_comment_db(table, request):
-    # check_request = request
     if "question_id" in request:
         handle_database("""INSERT INTO {} ({}, {}, {}, {}) VALUES ({}, {}, '{}', '{}');""".format(table,
                         'question_id', 'answer_id', 'message', 'submission_time',

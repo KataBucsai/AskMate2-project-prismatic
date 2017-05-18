@@ -148,3 +148,26 @@ def delete_tag(question_id):
     if not tag_id_in_question_tag:
         ui.delete_record('tag', "id=%s" % (tag_id))
     return redirect('/question/' + question_id)
+
+
+@app.route('/question/<question_id>/new-comment')
+def new_question_comment(question_id):
+    return render_template('new_comment.html', question_id=question_id, comment_type="question")
+
+
+@app.route('/create_new_comment', methods=['POST'])
+def add_new_question_comment():
+    ui.add_item_to_comment_db('comment', request.form)
+    return redirect('/question/' + request.form["question_id"])
+
+
+@app.route('/answer/<answer_id>/new-comment')
+def new_answer_comment(answer_id):
+    return render_template('new_comment.html', answer_id=answer_id, comment_type="answer")
+
+
+@app.route('/create_new_answer_comment', methods=['POST'])
+def add_new_answer_comment():
+    ui.add_item_to_comment_db('comment', request.form)
+    question_id = ui.get_record_from_sql_db('answer', 'id=%s' % (request.form["answer_id"]))[0][3]
+    return redirect('/question/' + str(question_id))
