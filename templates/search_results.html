@@ -13,6 +13,12 @@
 
     <h1>Search results</h1>
 
+        {% if search_results == [] %}
+            <p>
+                Sorry, no results...
+            </p>
+        {% endif %}
+
     <form action="/">
         <input type="submit" value="Back to questions" >
     </form>
