@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>New comment</title>
+
+</head>
+
+<body>
+
+    <h1>New comment</h1>
+
+    <form action="/create_new_comment" method="post">
+        <p>
+            <label for="new_comment_message">Please enter the comment</label>
+        </p>
+        <p>
+            <textarea name="new_comment_message" id="new_comment_message" rows="10" cols='33' minlength="10" required></textarea>
+        </p>
+            <input type="hidden" name="question_id" value="{{ question_id }}">
+        <p>
+            <input type="submit" value="Add new comment" id="new_comment" name="new_comment">
+        </p>
+    </form>
+
+</body>
+
+</html>
