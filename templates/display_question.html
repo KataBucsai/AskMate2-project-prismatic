@@ -25,15 +25,15 @@
     <form action="/question/{{ id }}/new-comment">
         <input type="submit" value="Add new Comment" id="add_new_comment" name="add_new_comment">
     </form>
-    <form action="\delete\{{ id }}" method="post">
+    <form action="/delete/{{ id }}" method="post">
         <input type="submit" value="Delete question">
     </form>
     <br>
     <p style="display: inline;">Tags:</p>
         {% for row in tag_list %}
-            <p style="display: inline;" class="delete_tag">x</p><p style="background-color: #aac4ef; display: inline; padding: 2px;">{{ row[0] }}</p>
+            <a href="/delete_tag/{{ id }}?tag_name={{ row[0] }}">x</a><p style="background-color: #aac4ef; display: inline; padding: 2px;">{{ row[0] }}</p>
         {% endfor %}
-    <form action="\question\{{ id }}\new-tag" method="post">
+    <form action="/question/{{ id }}/new-tag" method="post">
         <input type="submit" value="Add new tag">
     </form>
     <br>
