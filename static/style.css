@@ -1,0 +1,44 @@
+html {background-color : #F0F0F0;}
+ 
+body {
+    width : 980px;
+    margin-left : auto;
+    margin-right : auto;
+    font-family : Gill Sans, sans-serif;
+    font-size : 1.2em;
+    color : #404040;
+    background-color : white;
+    padding : 10px;
+    padding-top : 0px;
+}
+ 
+a {
+    color : #3AA6D0;
+    text-decoration : none;
+}
+ 
+/* H TAGS */
+ 
+h1 {
+    font-size : 3em;
+    color : FF2C00;
+}
+ 
+h2 {
+    font-size : 1.5em;
+    color : #FF8500;
+}
+ 
+h3 {
+    font-size : 1.2em;
+    color : #00B945;
+}
+
+input[type=submit], select {
+    padding:5px 15px; 
+    background:#ccc; 
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+}
