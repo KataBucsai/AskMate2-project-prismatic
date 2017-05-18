@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Search results</title>
+
+</head>
+
+<body>
+
+    <h1>Search results</h1>
+
+    <form action="/">
+        <input type="submit" value="Back to questions" >
+    </form>
+
+        {% for row in question_list %}
+            <h4><a href='/question/{{ row[0] }}'>{{ row[4] }}</a></h4>
+            <p>Votes: 
+                <a href="/vote_question_up?id={{ row[0] }}"><img src="/static/thumbs_up.png" id="{{ row[0] }}" alt="Vote up" width="20"></a>
+                {{ row[3] }}
+                <a href="/vote_question_down?id={{ row[0] }}"><img src="/static/thumbs_down.png" id="{{ row[0] }}" alt="Vote down" width="20"></a>
+                Views: {{ row[2] }}
+            </p>
+            <p>
+                Question date: {{ row[1] }}
+            </p>
+            <p>
+                {% if row[6] == None %}
+                    <td><a href='/add_image/{{row[0]}}'>Add image</td>
+                {% else %}
+                    <td><a href='static/uploads/img/{{row[6]}}' ><img src='static/uploads/img/{{row[6]}}' width = 40px>
+                {% endif %}
+                <form action="\delete\{{ row[0] }}" method="post">
+                    <input type="submit" value="Delete question">
+                </form>
+            </p>
+            <hr>
+        {% endfor %}
+</body>
+
+</html>
