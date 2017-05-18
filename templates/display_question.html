@@ -26,22 +26,26 @@
         <input type="submit" value="Delete question">
     </form>
     <br>
-    <form action="/question/{{ id }}/new-comment">
-        <input type="submit" value="Add new Comment" id="add_new_comment" name="add_new_comment">
-    </form>
+    <hr>
     <br>
-    <p style="display: inline;">Tags:</p>
-        {% for row in tag_list %}
-            <a href="/delete_tag/{{ id }}?tag_name={{ row[0] }}">x</a><p style="background-color: #aac4ef; display: inline; padding: 2px;">{{ row[0] }}</p>
-        {% endfor %}
     <form action="/question/{{ id }}/new-tag" method="post">
         <input type="submit" value="Add new tag">
     </form>
     <br>
+    <h2 style="display: inline;">Tags:</h2>
+        {% for row in tag_list %}
+            <a href="/delete_tag/{{ id }}?tag_name={{ row[0] }}">x </a><p style="background-color: #aac4ef; display: inline; padding: 2px;">{{ row[0] }}</p>
+        {% endfor %}
+    <br>
+    <hr>
+    <br>
+    <form action="/question/{{ id }}/new-comment">
+        <input type="submit" value="Add new Comment" id="add_new_comment" name="add_new_comment">
+    </form>
         {% if list_comments|length == 0%}
             <p>There are no comments yet</p>
         {% else %}
-            <p>Comments:</p>
+            <h2>Comments:</h2>
         {% endif %}
         {% set count = [0] %}
         {% for row in list_comments %}
@@ -53,19 +57,20 @@
             <hr>
         {% endfor %}
     <br>
+    <hr>
+    <br>
     <form action="/question/{{ id }}/new-answer">
         <input type="submit" value="Add new Answer" id="add_new_answer" name="add_new_answer">
     </form>
-    <br>
         {% if list_answers|length == 0%}
             <p>There are no answers yet</p>
         {% else %}
-            <p>Answers:</p>
+            <h2>Answers:</h2>
         {% endif %}
         {% set count = [0] %}
         {% for row in list_answers %}
             {%if count.append(count.pop() + 1) %}{% endif %}
-            <p>{{ count[0] }}. {{ row[4]}}</p>
+            <h3>{{ count[0] }}. {{ row[4]}}</h3> 
             <p>Votes: 
                 <a href="/vote_answer_up?id={{ row[0] }}"><img src="/static/thumbs_up.png" id="{{ row[0] }}" alt="Vote up" width="20"></a>
                 {{ row[2] }}
@@ -83,9 +88,8 @@
             <br>
             <form action="/answer/{{ row[0] }}/new-comment">
             <input type="submit" value="Add new Answer Comment" id="add_new_answer_comment" name="add_new_answer_comment">
-            </form>
-            <br>           
-            {% if list_comments|length == 0%}
+            </form>         
+            {% if list_answer_comments|length == 0%}
                 <p>There are no comments yet</p>
             {% else %}
                 <p>Comments:</p>

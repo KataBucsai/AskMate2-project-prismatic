@@ -21,19 +21,29 @@ a {
 /* H TAGS */
  
 h1 {
-    font-size : 3em;
-    color : FF2C00;
+    display:block;
+    font-size : 2em;
+    width : 900px;
+    word-wrap: break-word;
 }
  
 h2 {
+    display:block;
     font-size : 1.5em;
     color : #FF8500;
+    width : 900px;
+    word-wrap:break-word;
 }
  
 h3 {
+    display:block;
     font-size : 1.2em;
     color : #00B945;
+    padding-left: 40px;
+    width : 900px;
+    word-wrap:break-word;
 }
+
 
 input[type=submit], select {
     padding:5px 15px; 
