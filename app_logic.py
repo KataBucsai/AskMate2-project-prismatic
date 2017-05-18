@@ -4,9 +4,14 @@ import ui
 app = Flask(__name__)
 
 
+@app.route('/list')
 @app.route('/')
 def list_questions():
-    question_list = ui.get_table_from_sql_db('question')
+    if 'list' in str(request):
+        limit = ''
+    else:
+        limit = ' LIMIT 5'
+    question_list = ui.get_table_from_sql_db('question', limit)
     return render_template('list_questions.html', question_list=question_list)
 
 
@@ -30,11 +35,14 @@ def display_question(id, count_view=True):
     ui.update_record('question', "view_number=%s" % (view_number), "id=%s" % (id))
     answer_list = ui.get_record_from_sql_db('answer', "question_id=%s" % (id))
     comment_list = ui.get_record_from_sql_db('comment', "question_id=%s" % (id))
+<<<<<<< HEAD
     answer_comment_list = []
     for answer in answer_list:
         answer_comment_list.append(ui.get_record_from_sql_db('comment', "answer_id=%s" % (answer[0])))
     print(answer_comment_list)
     # SELECT tag.name FROM tag JOIN question_tag ON question_tag.tag_id=tag.id WHERE question_tag.question_id=1;
+=======
+>>>>>>> 70e6cee00da514642967b87c20ce035fdec7ed80
     tag_list = ui.get_record_from_tag('tag', 'question_tag ON question_tag.tag_id=tag.id', "question_tag.question_id=%s" % (id))
     return render_template('display_question.html', id=id, title=title, 
                            message=message, list_answers=answer_list, 
@@ -95,7 +103,6 @@ def vote_answer_down():
 def delete_question(question_id):
     answer_list = ui.get_record_from_sql_db('answer', "question_id=%s" % (question_id))
     for record in answer_list:
-        # print(record[0])
         ui.delete_record('comment', "answer_id=%s" % (record[0]))
     ui.delete_record('answer', "question_id=%s" % (question_id))
     ui.delete_record('question_tag', "question_id=%s" % (question_id))
@@ -113,18 +120,34 @@ def add_tag(question_id):
 @app.route('/question/<question_id>/add_new_tag', methods=['POST'])
 def add_new_tag(question_id):
     if request.form['new_tag']:
-        # insert a new tag into tag if it is not in it
         if not ui.get_record_from_sql_db('tag', "name='%s'" % (request.form['new_tag'])):
             ui.add_item_to_tag('tag', request.form['new_tag'])
-        # get new tag's id
         new_tag_id_list = ui.get_tag_id_by_name(request.form['new_tag'])
-        # add this to question_tag if it is not added yet
         if not ui.get_record_from_sql_db('question_tag', "question_id=%s AND tag_id=%s" % (question_id, new_tag_id_list[0][0])):
             ui.add_item_to_question_tag('question_tag', question_id, new_tag_id_list[0][0])
     else:
-        # get the tag id of the existing tag
         existing_tag_id_list = ui.get_tag_id_by_name(request.form['existing_tag'])
-        # if question_id, existing_tag_id_list[0][0] is NOT in question_tag table
         if not ui.get_record_from_sql_db('question_tag', "question_id=%s AND tag_id=%s" % (question_id, existing_tag_id_list[0][0])):
             ui.add_item_to_question_tag('question_tag', question_id, existing_tag_id_list[0][0])
+    return redirect('/question/' + question_id)
+
+
+@app.route('/search', methods=['GET'])
+def search():
+    search = request.args.get('q').replace(' ', '%')
+    search_results = ui.search_in_db("*", "question FULL JOIN answer ON question.id = answer.question_id ", "question.title LIKE '%{}%' OR answer.message LIKE '%{}%'".format(search, search))
+    print()
+    print(search_results)
+    print()
+    return render_template('search_results.html', search_results=search_results)
+
+
+@app.route('/delete_tag/<question_id>')
+def delete_tag(question_id):
+    tag_name = request.args.get('tag_name')
+    tag_id = ui.get_record_from_sql_db('tag', "name='%s'" % (tag_name))[0][0]
+    ui.delete_record('question_tag', "question_id=%s AND tag_id=%s" % (question_id, tag_id))
+    tag_id_in_question_tag = ui.get_record_from_sql_db('question_tag', "tag_id=%s" % (tag_id))
+    if not tag_id_in_question_tag:
+        ui.delete_record('tag', "id=%s" % (tag_id))
     return redirect('/question/' + question_id)

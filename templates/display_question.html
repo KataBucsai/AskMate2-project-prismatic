@@ -5,6 +5,7 @@
 <head>
 
     <title>Display question</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
 
 </head>
 
@@ -20,8 +21,12 @@
     <form action="\">
         <input type="submit" value="Back to questions">
     </form>
+<<<<<<< HEAD
     <br>
     <form action="\delete\{{ id }}" method="post">
+=======
+    <form action="/delete/{{ id }}" method="post">
+>>>>>>> 70e6cee00da514642967b87c20ce035fdec7ed80
         <input type="submit" value="Delete question">
     </form>
     <br>
@@ -31,9 +36,9 @@
     <br>
     <p style="display: inline;">Tags:</p>
         {% for row in tag_list %}
-            <p style="display: inline;" class="delete_tag">x</p><p style="background-color: #aac4ef; display: inline; padding: 2px;">{{ row[0] }}</p>
+            <a href="/delete_tag/{{ id }}?tag_name={{ row[0] }}">x</a><p style="background-color: #aac4ef; display: inline; padding: 2px;">{{ row[0] }}</p>
         {% endfor %}
-    <form action="\question\{{ id }}\new-tag" method="post">
+    <form action="/question/{{ id }}/new-tag" method="post">
         <input type="submit" value="Add new tag">
     </form>
     <br>
