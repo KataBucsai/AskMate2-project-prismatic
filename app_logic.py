@@ -170,3 +170,8 @@ def add_new_answer_comment():
     ui.add_item_to_comment_db('comment', request.form)
     question_id = ui.get_record_from_sql_db('answer', 'id=%s' % (request.form["answer_id"]))[0][3]
     return redirect('/question/' + str(question_id))
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
