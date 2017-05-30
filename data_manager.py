@@ -22,19 +22,21 @@ def getDbConfig(settings):
 
 
 def handle_database(command):
+    connection = None
     try:
         config_data = getDbConfig(config.getSettings())
         connect_str = "dbname='" + config_data['db_name'] + "' user='" + config_data['user'] + "' host='" + config_data['host'] + "' password='" + config_data['password'] + "'"
-        conn = psycopg2.connect(connect_str)
-        conn.autocommit = True
-        cursor = conn.cursor()
+        connection = psycopg2.connect(connect_str)
+        connection.autocommit = True
+        cursor = connection.cursor()
         cursor.execute(command)
         if "SELECT" in command:
             table = cursor.fetchall()
             return table
         cursor.close()
-        conn.close()
-    except Exception as e:
-        error_message = "Uh oh, can't connect. Invalid dbname, user or password? \n" + str(e)
+    except psycopg2.DatabaseError as exception:
+        error_message = "Uh oh, can't connect. Invalid dbname, user or password? \n" + str(exception)
         print(error_message)
-        sys.exit()
+    finally:
+        if connection:
+            connection.close()
