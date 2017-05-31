@@ -15,6 +15,16 @@
 
     <form action="/create_new_question" method="post">
         <p>
+            <label for="new_question_user">Please select your user name</label>
+        </p>
+        <p>
+            <select name="new_question_user" id="new_question_user">
+                {% for user in users %}
+                    <option>{{ user[0] }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
             <label for="new_question_title">Please enter a new question title</label>
         </p>
         <p>
