@@ -201,8 +201,19 @@ def user_page(user_id):
                                        WHERE users_id='%s';""" % (user_id))
     answer_list = ui.handle_query("""SELECT a.message, q.id
                                      FROM answer a
-                                     LEFT JOIN question q
-                                     ON a.question_id=q.id
+                                     LEFT JOIN question q ON a.question_id=q.id
                                      WHERE a.users_id=%s;""" % (user_id))
-    print(answer_list)
-    return render_template('user_page.html', user_name=user_name, question_list=question_list, answer_list=answer_list)
+    comment_list = ui.handle_query("""SELECT c.message, q.id
+                                     FROM comment c
+                                     LEFT JOIN question q ON c.question_id=q.id
+                                     WHERE c.users_id=%s AND c.question_id IS NOT NULL
+                                     UNION
+                                     SELECT c.message, q.id
+                                     FROM comment c
+                                     LEFT JOIN answer a ON a.id=c.answer_id
+                                     LEFT JOIN question q ON a.question_id=q.id
+                                     WHERE c.users_id=%s AND c.answer_id IS NOT NULL;""" % (user_id, user_id))
+    
+    print(comment_list)
+    return render_template('user_page.html', user_name=user_name,
+                                             question_list=question_list, answer_list=answer_list, comment_list=comment_list)
