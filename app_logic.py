@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
 import ui
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -175,3 +176,18 @@ def add_new_answer_comment():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+
+@app.route('/registration')
+def new_registration():
+    return render_template('registration.html')
+
+
+@app.route('/registration/new', methods=['POST'])
+def add_new_registration():
+    user_name = request.form['new_registration']
+    registration_date = datetime.today().strftime("%Y-%m-%d")
+    print(registration_date)
+    query = """INSERT INTO users (user_name, registration_date) VALUES ('%s', '%s')""" % (user_name, registration_date)
+    ui.handle_query(query)
+    return redirect('/')
