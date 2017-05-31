@@ -191,3 +191,15 @@ def add_new_registration():
     query = """INSERT INTO users (user_name, registration_date) VALUES ('%s', '%s')""" % (user_name, registration_date)
     ui.handle_query(query)
     return redirect('/')
+
+
+@app.route('/tags')
+def tags():
+    tag_list = ui.handle_query("""SELECT t.id, t.name, COUNT(qt.question_id)
+                                  FROM tag t
+                                  LEFT JOIN question_tag qt
+                                  ON qt.tag_id=t.id
+                                  GROUP BY t.id
+                                  ORDER BY COUNT(qt.question_id) DESC;""")
+    return render_template('tag_page.html', tag_list=tag_list)
+    

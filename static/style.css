@@ -21,7 +21,7 @@ a {
 /* H TAGS */
  
 h1 {
-    display:block;
+    display: block;
     font-size : 2em;
     width : 900px;
     word-wrap: break-word;
@@ -32,7 +32,7 @@ h2 {
     font-size : 1.5em;
     color : #FF8500;
     width : 900px;
-    word-wrap:break-word;
+    word-wrap: break-word;
 }
  
 h3 {
@@ -46,10 +46,13 @@ h3 {
 
 
 input[type=submit], select {
-    padding:5px 15px; 
+    padding: 5px 15px; 
     background:#ccc; 
-    border:0 none;
-    cursor:pointer;
+    border: 0 none;
+    cursor: pointer;
     -webkit-border-radius: 5px;
     border-radius: 5px; 
 }
+
+td, th {
+    border: 1px solid black;}
