@@ -213,7 +213,5 @@ def user_page(user_id):
                                      LEFT JOIN answer a ON a.id=c.answer_id
                                      LEFT JOIN question q ON a.question_id=q.id
                                      WHERE c.users_id=%s AND c.answer_id IS NOT NULL;""" % (user_id, user_id))
-    
-    print(comment_list)
-    return render_template('user_page.html', user_name=user_name,
-                                             question_list=question_list, answer_list=answer_list, comment_list=comment_list)
+    return render_template('user_page.html', user_name=user_name, question_list=question_list,
+                           answer_list=answer_list, comment_list=comment_list)
