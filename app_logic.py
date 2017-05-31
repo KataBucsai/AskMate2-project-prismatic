@@ -187,7 +187,6 @@ def new_registration():
 def add_new_registration():
     user_name = request.form['new_registration']
     registration_date = datetime.today().strftime("%Y-%m-%d")
-    print(registration_date)
     query = """INSERT INTO users (user_name, registration_date) VALUES ('%s', '%s')""" % (user_name, registration_date)
     ui.handle_query(query)
     return redirect('/')
