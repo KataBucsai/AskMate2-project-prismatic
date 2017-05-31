@@ -14,20 +14,30 @@
     <h1>New comment</h1>
 
     <form {% if comment_type == "question" %} 
-            action="/create_new_comment" method="post"
-          {% else %}
+            action="/create_new_comment" method="post"   
+            <p>
+                <label for="new_question_comment_user">Please select your user name</label>
+            </p>
+            <p>
+                <select name="new_question_comment_user" id="new_question_comment_user">
+                    {% for user in users %}
+                        <option>{{ user[0] }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+        {% else %}
             action="/create_new_answer_comment" method="post"
-          {% endif %}>
-        <p>
-            <label for="new_question_comment_user">Please select your user name</label>
-        </p>
-        <p>
-            <select name="new_question_comment_user" id="new_question_comment_user">
-                {% for user in users %}
-                    <option>{{ user[0] }}</option>
-                {% endfor %}
-            </select>
-        </p>
+            <p>
+            <label for="new_answer_comment_user">Please select your user name</label>
+            </p>
+            <p>
+                <select name="new_answer_comment_user" id="new_answer_comment_user">
+                    {% for user in users %}
+                        <option>{{ user[0] }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+        {% endif %}
         <p>
             <label for="new_comment_message">Please enter the comment</label>
         </p>

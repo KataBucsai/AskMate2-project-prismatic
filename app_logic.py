@@ -168,12 +168,17 @@ def add_new_question_comment():
 
 @app.route('/answer/<answer_id>/new-comment')
 def new_answer_comment(answer_id):
-    return render_template('new_comment.html', answer_id=answer_id, comment_type="answer")
+    users = ui.handle_query("""SELECT user_name FROM users ORDER BY user_name;""")
+    return render_template('new_comment.html', answer_id=answer_id, comment_type="answer", users=users)
 
 
 @app.route('/create_new_answer_comment', methods=['POST'])
 def add_new_answer_comment():
-    ui.add_item_to_comment_db('comment', request.form)
+    new_answer_comment_user = request.form['new_answer_comment_user']
+    user_id = ui.handle_query("""SELECT id FROM users WHERE user_name='{}';""". format(new_answer_comment_user))
+    ui.handle_query("""INSERT INTO comment (answer_id, message, submission_time, users_id)
+                    VALUES ({}, '{}', '{}', {});""".format(request.form['answer_id'],
+                    request.form['new_comment_message'], str(datetime.now())[:-7], user_id[0][0]))
     question_id = ui.get_record_from_sql_db('answer', 'id=%s' % (request.form["answer_id"]))[0][3]
     return redirect('/question/' + str(question_id))
 
