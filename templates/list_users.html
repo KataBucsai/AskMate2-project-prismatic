@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <head>
+    <title>User list</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+  </head>
+  <body>
+
+    <h1> User list </h1>
+        
+    <p>
+        <a  href="/"> Back to main page</a>
+    </p>
+
+    {% if row_count == 0 %}
+        <p>
+            Sorry, no users...
+        </p>
+
+    {% else %}
+
+        <table>
+            <th>   
+                username 
+            </th>
+            <th>   
+                registration date 
+            </th>
+            <th>   
+                reputation 
+            </th>
+                {% for row in user_list %}
+                    <tr>
+                        {% for item in row %}
+                            <td>
+                                {{ item }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}   
+        </table>
+
+    {% endif %}
+
+  </body>
+</html>

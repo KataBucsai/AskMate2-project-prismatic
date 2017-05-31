@@ -191,3 +191,13 @@ def add_new_registration():
     query = """INSERT INTO users (user_name, registration_date) VALUES ('%s', '%s')""" % (user_name, registration_date)
     ui.handle_query(query)
     return redirect('/')
+
+
+@app.route('/list_users')
+def list_users():
+    query = """SELECT user_name, registration_date, reputation \
+            FROM users \
+            ORDER BY id"""
+    user_list = ui.handle_query(query)
+    print(user_list)
+    return render_template('list_users.html', user_list=user_list)
