@@ -50,12 +50,17 @@ def display_question(id, count_view=True):
 
 @app.route('/question/<question_id>/new-answer')
 def new_answer(question_id):
-    return render_template('new_answer.html', question_id=question_id)
+    users = ui.handle_query("""SELECT user_name FROM users ORDER BY user_name;""")
+    return render_template('new_answer.html', question_id=question_id, users=users)
 
 
 @app.route('/create_new_answer', methods=['POST'])
 def add_new_answer():
-    ui.add_item_to_answer_db('answer', request.form)
+    new_answer_user = request.form['new_answer_user']
+    user_id = ui.handle_query("""SELECT id FROM users WHERE user_name='{}';""". format(new_answer_user))
+    ui.handle_query("""INSERT INTO answer (submission_time, vote_number, question_id, message, users_id)
+                    VALUES ('{}', {}, {}, '{}', {});""".format(
+                    str(datetime.now())[:-7], 0, request.form['question_id'], request.form['new_answer_message'], user_id[0][0]))
     return redirect('/question/' + request.form["question_id"])
 
 
