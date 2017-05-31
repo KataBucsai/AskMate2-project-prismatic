@@ -195,9 +195,8 @@ def add_new_registration():
 
 @app.route('/list_users')
 def list_users():
-    query = """SELECT user_name, registration_date, reputation \
+    query = """SELECT * \
             FROM users \
             ORDER BY id"""
     user_list = ui.handle_query(query)
-    print(user_list)
     return render_template('list_users.html', user_list=user_list)
