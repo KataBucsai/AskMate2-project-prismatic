@@ -26,6 +26,8 @@
         <input type="submit" value="Add new Question" id="add" name="add_new_question">
     </form>
 
+    <a href='/registration'>User registration</a>  
+
     <br>
         {% for row in question_list %}
             <h4><a href='/question/{{ row[0] }}'>{{ row[4] }}</a></h4>
