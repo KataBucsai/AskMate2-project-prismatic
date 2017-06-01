@@ -24,9 +24,9 @@
     </form>
 
         {% for row in search_results %}
-            <h4><a href='/question/{{ row[0] }}'>{{ row[13]|safe }}</a></h4>
-            {% if row[14] != None %}
-                <h5>&nbsp; {{ row[14]|safe }}</h5>
+            <h4><a href='/question/{{ row[0] }}'>{{ row[16]|safe }}</a></h4>
+            {% if row[17] != None %}
+                <h5>&nbsp; {{ row[17]|safe }}</h5>
             {% endif %}
             <p>Votes: 
                 <a href="/vote_question_up?id={{ row[0] }}"><img src="/static/thumbs_up.png" id="{{ row[0] }}" alt="Vote up" width="20"></a>
