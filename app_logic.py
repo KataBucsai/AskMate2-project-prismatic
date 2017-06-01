@@ -65,6 +65,14 @@ def vote_question_up():
     question_list = ui.get_record_from_sql_db('question', "id=%s" % (id))
     vote_number = question_list[0][3] + 1
     ui.update_record('question', "vote_number=%s" % (vote_number), "id=%s" % (id))
+    query = """SELECT users_id \
+            FROM question
+            WHERE id = %s""" % (id)
+    user_id = ui.handle_query(query)[0][0]
+    query = """UPDATE users \
+            SET reputation = reputation + 5 \
+            WHERE id = %s""" % user_id
+    ui.handle_query(query)
     return redirect('/')
 
 
@@ -84,6 +92,14 @@ def vote_answer_up():
     vote_number = answer_list[0][2] + 1
     ui.update_record('answer', "vote_number=%s" % (vote_number), "id=%s" % (id))
     question_id = answer_list[0][3]
+    query = """SELECT users_id \
+            FROM answer
+            WHERE id = %s""" % (id)
+    user_id = ui.handle_query(query)[0][0]
+    query = """UPDATE users \
+            SET reputation = reputation + 10 \
+            WHERE id = %s""" % user_id
+    ui.handle_query(query)
     return display_question(question_id, count_view=False)
 
 
