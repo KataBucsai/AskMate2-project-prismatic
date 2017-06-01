@@ -12,7 +12,7 @@ def list_questions():
         limit = ''
     else:
         limit = ' LIMIT 5'
-    question_list = ui.get_table_from_sql_db('question', limit)
+    question_list = ui.handle_query("""SELECT * FROM question ORDER BY submission_time DESC {};""".format(limit))
     return render_template('list_questions.html', question_list=question_list)
 
 
@@ -20,9 +20,10 @@ def list_questions():
 def create_new_question():
     new_question_user = request.form['new_question_user']
     user_id = ui.handle_query("""SELECT id FROM users WHERE user_name='{}';""". format(new_question_user))
-    ui.handle_query("""INSERT INTO question (submission_time, view_number, vote_number, title, message, users_id) 
+    ui.handle_query("""INSERT INTO question (submission_time, view_number, vote_number, title, message, users_id)
                     VALUES ('{}', {}, {}, '{}', '{}', {});""".format(
-                    str(datetime.now())[:-7], 0, 0, request.form['new_question_title'], request.form['new_question_message'], user_id[0][0]))
+                    str(datetime.now())[:-7], 0, 0, request.form['new_question_title'],
+                    request.form['new_question_message'], user_id[0][0]))
     return redirect('/')
 
 
@@ -34,17 +35,17 @@ def new_question():
 
 @app.route('/question/<id>')
 def display_question(id, count_view=True):
-    question_list = ui.get_record_from_sql_db('question', "id=%s" % (id))
+    question_list = ui.handle_query("""SELECT * FROM question WHERE id=%s;""" % (id))
     title = question_list[0][4]
     message = question_list[0][5]
     view_number = question_list[0][2] + 1
     ui.update_record('question', "view_number=%s" % (view_number), "id=%s" % (id))
-    answer_list = ui.get_record_from_sql_db('answer', "question_id=%s" % (id))
-    comment_list = ui.get_record_from_sql_db('comment', "question_id=%s" % (id))
+    answer_list = ui.handle_query("""SELECT * FROM answer WHERE question_id=%s;""" % (id))
+    comment_list = ui.handle_query("""SELECT * FROM comment WHERE question_id=%s;""" % (id))
+    print
     answer_comment_list = []
     for answer in answer_list:
-        answer_comment_list.append(ui.get_record_from_sql_db('comment', "answer_id=%s" % (answer[0])))
-    # SELECT tag.name FROM tag JOIN question_tag ON question_tag.tag_id=tag.id WHERE question_tag.question_id=1;
+        answer_comment_list.append(ui.handle_query("""SELECT * FROM comment WHERE answer_id=%s;""" % (answer[0])))
     tag_list = ui.get_record_from_tag('tag', 'question_tag ON question_tag.tag_id=tag.id',
                                       "question_tag.question_id=%s" % (id))
     return render_template('display_question.html', id=id, title=title,
@@ -72,7 +73,7 @@ def add_new_answer():
 @app.route('/vote_question_up')
 def vote_question_up():
     id = request.args.get('id')
-    question_list = ui.get_record_from_sql_db('question', "id=%s" % (id))
+    question_list = ui.handle_query("""SELECT * FROM question WHERE id=%s;""" % (id))
     vote_number = question_list[0][3] + 1
     ui.update_record('question', "vote_number=%s" % (vote_number), "id=%s" % (id))
     query = """SELECT users_id \
@@ -89,7 +90,7 @@ def vote_question_up():
 @app.route('/vote_question_down')
 def vote_question_down():
     id = request.args.get('id')
-    question_list = ui.get_record_from_sql_db('question', "id=%s" % (id))
+    question_list = ui.handle_query("""SELECT * FROM question WHERE id=%s;""" % (id))
     vote_number = question_list[0][3] - 1
     ui.update_record('question', "vote_number=%s" % (vote_number), "id=%s" % (id))
     query = """SELECT users_id \
@@ -106,7 +107,7 @@ def vote_question_down():
 @app.route('/vote_answer_up')
 def vote_answer_up():
     id = request.args.get('id')
-    answer_list = ui.get_record_from_sql_db('answer', "id=%s" % (id))
+    answer_list = ui.handle_query("""SELECT * FROM answer WHERE id=%s;""" % (id))
     vote_number = answer_list[0][2] + 1
     ui.update_record('answer', "vote_number=%s" % (vote_number), "id=%s" % (id))
     question_id = answer_list[0][3]
@@ -124,7 +125,7 @@ def vote_answer_up():
 @app.route('/vote_answer_down')
 def vote_answer_down():
     id = request.args.get('id')
-    answer_list = ui.get_record_from_sql_db('answer', "id=%s" % (id))
+    answer_list = ui.handle_query("""SELECT * FROM answer WHERE id=%s;""" % (id))
     vote_number = answer_list[0][2] - 1
     ui.update_record('answer', "vote_number=%s" % (vote_number), "id=%s" % (id))
     question_id = answer_list[0][3]
@@ -141,7 +142,7 @@ def vote_answer_down():
 
 @app.route('/delete/<question_id>', methods=['POST'])
 def delete_question(question_id):
-    answer_list = ui.get_record_from_sql_db('answer', "question_id=%s" % (question_id))
+    answer_list = ui.handle_query("""SELECT * FROM answer WHERE question_id=%s;""" % (question_id))
     for record in answer_list:
         ui.delete_record('comment', "answer_id=%s" % (record[0]))
     ui.delete_record('answer', "question_id=%s" % (question_id))
@@ -160,16 +161,16 @@ def add_tag(question_id):
 @app.route('/question/<question_id>/add_new_tag', methods=['POST'])
 def add_new_tag(question_id):
     if request.form['new_tag']:
-        if not ui.get_record_from_sql_db('tag', "name='%s'" % (request.form['new_tag'])):
+        if not ui.handle_query("""SELECT * FROM tag WHERE name='%s'""" % (request.form['new_tag'])):
             ui.add_item_to_tag('tag', request.form['new_tag'])
         new_tag_id_list = ui.get_tag_id_by_name(request.form['new_tag'])
-        if not ui.get_record_from_sql_db('question_tag',
-                                         "question_id=%s AND tag_id=%s" % (question_id, new_tag_id_list[0][0])):
+        if not ui.handle_query("""SELECT * FROM question_tag WHERE question_id=%s AND tag_id=%s"""
+                               % (question_id, new_tag_id_list[0][0])):
             ui.add_item_to_question_tag('question_tag', question_id, new_tag_id_list[0][0])
     else:
         existing_tag_id_list = ui.get_tag_id_by_name(request.form['existing_tag'])
-        if not ui.get_record_from_sql_db('question_tag',
-                                         "question_id=%s AND tag_id=%s" % (question_id, existing_tag_id_list[0][0])):
+        if not ui.handle_query("""SELECT * FROM question_tag WHERE question_id=%s AND tag_id=%s"""
+                               % (question_id, existing_tag_id_list[0][0])):
             ui.add_item_to_question_tag('question_tag', question_id, existing_tag_id_list[0][0])
     return redirect('/question/' + question_id)
 
@@ -184,9 +185,10 @@ def search():
 @app.route('/delete_tag/<question_id>')
 def delete_tag(question_id):
     tag_name = request.args.get('tag_name')
-    tag_id = ui.get_record_from_sql_db('tag', "name='%s'" % (tag_name))[0][0]
+    tag_id = ui.handle_query("""SELECT * FROM tag WHERE name='%s'""" % (tag_name))
+    tag_id = tag_id[0][0]
     ui.delete_record('question_tag', "question_id=%s AND tag_id=%s" % (question_id, tag_id))
-    tag_id_in_question_tag = ui.get_record_from_sql_db('question_tag', "tag_id=%s" % (tag_id))
+    tag_id_in_question_tag = ui.handle_query("""SELECT * FROM question_tag WHERE tag_id=%s""" % (tag_id))
     if not tag_id_in_question_tag:
         ui.delete_record('tag', "id=%s" % (tag_id))
     return redirect('/question/' + question_id)
@@ -221,7 +223,8 @@ def add_new_answer_comment():
     ui.handle_query("""INSERT INTO comment (answer_id, message, submission_time, users_id)
                     VALUES ({}, '{}', '{}', {});""".format(request.form['answer_id'],
                     request.form['new_comment_message'], str(datetime.now())[:-7], user_id[0][0]))
-    question_id = ui.get_record_from_sql_db('answer', 'id=%s' % (request.form["answer_id"]))[0][3]
+    question_id = ui.handle_query("""SELECT * FROM answer WHERE id=%s;""" % (request.form["answer_id"]))
+    question_id = question_id[0][3]
     return redirect('/question/' + str(question_id))
 
 
@@ -253,7 +256,7 @@ def tags():
                                   GROUP BY t.id
                                   ORDER BY COUNT(qt.question_id) DESC;""")
     return render_template('tag_page.html', tag_list=tag_list)
-    
+
 
 @app.route('/user/<user_id>')
 def user_page(user_id):
@@ -277,8 +280,8 @@ def user_page(user_id):
                                      WHERE c.users_id=%s AND c.answer_id IS NOT NULL;""" % (user_id, user_id))
     return render_template('user_page.html', user_name=user_name, question_list=question_list,
                            answer_list=answer_list, comment_list=comment_list)
-  
-  
+
+
 @app.route('/list_users')
 def list_users():
     query = """SELECT * \

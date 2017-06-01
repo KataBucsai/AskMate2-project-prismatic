@@ -3,17 +3,6 @@ import psycopg2
 from data_manager import handle_database
 
 
-def get_table_from_sql_db(table_name, limit, order_by=['submission_time', 'DESC']):
-    result = handle_database("""SELECT * FROM {} ORDER BY {} {}{};""".format(table_name,
-                                                                             order_by[0], order_by[1], limit))
-    return result
-
-
-def get_record_from_sql_db(table_name, condition):
-    result = handle_database("""SELECT * FROM {} WHERE {};""".format(table_name, condition))
-    return result
-
-
 def get_record_from_tag(table_name, join_text, condition):
     # SELECT tag.name FROM tag JOIN question_tag ON question_tag.tag_id=tag.id WHERE question_tag.question_id=1;
     result = handle_database("""SELECT name FROM {} JOIN {} WHERE {};""".format(table_name, join_text, condition))
