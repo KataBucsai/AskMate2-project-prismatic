@@ -15,22 +15,21 @@
             <label for="search">Search in questions and answers:</label>
         </p>
         <p>
-            <textarea id="q" name="q" rows="1" cols='33' required></textarea>
-            <input type="submit" value="Search" >
+            <input name="q" id="q" required>
+            <input type="submit" value="Search" class='button'>
         </p>
     </form>   
-
-    <h1>List of questions</h1>
 
     <form action="/question/new">
         <input type="submit" value="Add new Question" id="add" name="add_new_question">
     </form>
-
-    <a href='/registration'>User registration</a>  
     <br>
-    <a href='/list_users'>List of users</a>  
+    <a href='/registration' class="button_like_link">User registration</a>  
+    <br><br>
+    <a href='/list_users' class="button_like_link">List of users</a>  
 
-    <br>
+    <h1>List of questions</h1>
+
         {% for row in question_list %}
             <h4><a href='/question/{{ row[0] }}'>{{ row[4] }}</a></h4>
             <p>Votes: 
@@ -44,9 +43,9 @@
             </p>
             <p>
                 {% if row[6] == None %}
-                    <td><a href='/add_image/{{row[0]}}'>Add image</td>
+                    <td><a href='/add_image/{{row[0]}}' class="button_like_link">Add image </a></td>
                 {% else %}
-                    <td><a href='static/uploads/img/{{row[6]}}' ><img src='static/uploads/img/{{row[6]}}' width = 40px>
+                    <td><a href='static/uploads/img/{{row[6]}}' ><img src='static/uploads/img/{{row[6]}}' width = 40px></a></td>
                 {% endif %}
                 <form action="\delete\{{ row[0] }}" method="post">
                     <input type="submit" value="Delete question">
@@ -54,7 +53,7 @@
             </p>
             <hr>
         {% endfor %}
-        <a href="/list">List all questions</a>
+        <a href="/list" class="button_like_link">List all questions</a>
 </body>
 
 </html>

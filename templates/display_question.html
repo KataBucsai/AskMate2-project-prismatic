@@ -18,10 +18,11 @@
     <h3>
         {{ message }}
     </h3>
-    <form action="\">
-        <input type="submit" value="Back to questions">
-    </form>
+
+    <a href="/" class="button_like_link" >Back to the index page</a>
+    
     <br>
+    
     <form action="/delete/{{ id }}" method="post">
         <input type="submit" value="Delete question">
     </form>
@@ -34,11 +35,11 @@
     <br>
     <h2 style="display: inline;">Tags:</h2>
         {% for row in tag_list %}
-            <a href="/delete_tag/{{ id }}?tag_name={{ row[0] }}">x </a><p style="background-color: #aac4ef; display: inline; padding: 2px;">{{ row[0] }}</p>
+            <a href="/delete_tag/{{ id }}?tag_name={{ row[0] }}" class="button_like_link">x </a><p style="background-color: #aac4ef; display: inline; padding: 2px;">{{ row[0] }}</p>
         {% endfor %}
     <br>
     <br>
-    <a href="/tags">Go to tag page</a>
+    <a href="/tags" class="button_like_link">Go to tag page</a>
     <hr>
     <br>
     <form action="/question/{{ id }}/new-comment">

@@ -44,16 +44,6 @@ h3 {
     word-wrap:break-word;
 }
 
-
-input[type=submit], select {
-    padding: 5px 15px; 
-    background:#ccc; 
-    border: 0 none;
-    cursor: pointer;
-    -webkit-border-radius: 5px;
-    border-radius: 5px; 
-}
-
 table {
     border-collapse: collapse;
     margin-left: auto;
@@ -68,4 +58,22 @@ table, th, td {
 th, tfoot, tfoot td {
     text-align: center;
     font-weight: bold;
+}
+
+input[type=submit], select, .button_like_link{
+    background-color: #b3c2db;
+    border: none;
+    color: #404040;
+    text-align: center;
+    text-decoration: none;    
+    padding: 5px 15px; 
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+    font-size: 0.8em;
+    margin-top: 1px;
+}
+
+input[type=submit]:hover, select:hover, .button_like_link:hover {
+    background-color: #ccc;
+    cursor: pointer;
 }
