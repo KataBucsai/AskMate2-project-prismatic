@@ -76,3 +76,8 @@ def delete_record(table_name, condition):
 def search_in_db(search_query):
     result = handle_database("""{};""".format(search_query))
     return result
+
+
+def handle_query(sql_query):
+    result = handle_database(sql_query)
+    return result

@@ -21,7 +21,7 @@ a {
 /* H TAGS */
  
 h1 {
-    display:block;
+    display: block;
     font-size : 2em;
     width : 900px;
     word-wrap: break-word;
@@ -32,7 +32,7 @@ h2 {
     font-size : 1.5em;
     color : #FF8500;
     width : 900px;
-    word-wrap:break-word;
+    word-wrap: break-word;
 }
  
 h3 {
@@ -44,12 +44,36 @@ h3 {
     word-wrap:break-word;
 }
 
+table {
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-input[type=submit], select {
-    padding:5px 15px; 
-    background:#ccc; 
-    border:0 none;
-    cursor:pointer;
+table, th, td {
+    border: 1px solid black;
+    padding: 5px;
+}
+
+th, tfoot, tfoot td {
+    text-align: center;
+    font-weight: bold;
+}
+
+input[type=submit], select, .button_like_link{
+    background-color: #b3c2db;
+    border: none;
+    color: #404040;
+    text-align: center;
+    text-decoration: none;    
+    padding: 5px 15px; 
     -webkit-border-radius: 5px;
     border-radius: 5px; 
+    font-size: 0.8em;
+    margin-top: 1px;
+}
+
+input[type=submit]:hover, select:hover, .button_like_link:hover {
+    background-color: #ccc;
+    cursor: pointer;
 }

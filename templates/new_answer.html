@@ -15,6 +15,16 @@
 
     <form action="/create_new_answer" method="post">
         <p>
+            <label for="new_answer_user">Please select your user name</label>
+        </p>
+        <p>
+            <select name="new_answer_user" id="new_answer_user">
+                {% for user in users %}
+                    <option>{{ user[0] }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
             <label for="new_answer_message">Please enter the answer</label>
         </p>
         <p>

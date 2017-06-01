@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
 import ui
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -17,13 +18,18 @@ def list_questions():
 
 @app.route('/create_new_question', methods=['POST'])
 def create_new_question():
-    ui.add_item_to_sql_db('question', request.form)
+    new_question_user = request.form['new_question_user']
+    user_id = ui.handle_query("""SELECT id FROM users WHERE user_name='{}';""". format(new_question_user))
+    ui.handle_query("""INSERT INTO question (submission_time, view_number, vote_number, title, message, users_id) 
+                    VALUES ('{}', {}, {}, '{}', '{}', {});""".format(
+                    str(datetime.now())[:-7], 0, 0, request.form['new_question_title'], request.form['new_question_message'], user_id[0][0]))
     return redirect('/')
 
 
 @app.route('/question/new')
 def new_question():
-    return render_template('new_question.html')
+    users = ui.handle_query("""SELECT user_name FROM users ORDER BY user_name;""")
+    return render_template('new_question.html', users=users)
 
 
 @app.route('/question/<id>')
@@ -49,12 +55,17 @@ def display_question(id, count_view=True):
 
 @app.route('/question/<question_id>/new-answer')
 def new_answer(question_id):
-    return render_template('new_answer.html', question_id=question_id)
+    users = ui.handle_query("""SELECT user_name FROM users ORDER BY user_name;""")
+    return render_template('new_answer.html', question_id=question_id, users=users)
 
 
 @app.route('/create_new_answer', methods=['POST'])
 def add_new_answer():
-    ui.add_item_to_answer_db('answer', request.form)
+    new_answer_user = request.form['new_answer_user']
+    user_id = ui.handle_query("""SELECT id FROM users WHERE user_name='{}';""". format(new_answer_user))
+    ui.handle_query("""INSERT INTO answer (submission_time, vote_number, question_id, message, users_id)
+                    VALUES ('{}', {}, {}, '{}', {});""".format(
+                    str(datetime.now())[:-7], 0, request.form['question_id'], request.form['new_answer_message'], user_id[0][0]))
     return redirect('/question/' + request.form["question_id"])
 
 
@@ -64,6 +75,14 @@ def vote_question_up():
     question_list = ui.get_record_from_sql_db('question', "id=%s" % (id))
     vote_number = question_list[0][3] + 1
     ui.update_record('question', "vote_number=%s" % (vote_number), "id=%s" % (id))
+    query = """SELECT users_id \
+            FROM question
+            WHERE id = %s""" % (id)
+    user_id = ui.handle_query(query)[0][0]
+    query = """UPDATE users \
+            SET reputation = reputation + 5 \
+            WHERE id = %s""" % user_id
+    ui.handle_query(query)
     return redirect('/')
 
 
@@ -73,6 +92,14 @@ def vote_question_down():
     question_list = ui.get_record_from_sql_db('question', "id=%s" % (id))
     vote_number = question_list[0][3] - 1
     ui.update_record('question', "vote_number=%s" % (vote_number), "id=%s" % (id))
+    query = """SELECT users_id \
+            FROM question
+            WHERE id = %s""" % (id)
+    user_id = ui.handle_query(query)[0][0]
+    query = """UPDATE users \
+            SET reputation = reputation -2 \
+            WHERE id = %s""" % user_id
+    ui.handle_query(query)
     return redirect('/')
 
 
@@ -83,6 +110,14 @@ def vote_answer_up():
     vote_number = answer_list[0][2] + 1
     ui.update_record('answer', "vote_number=%s" % (vote_number), "id=%s" % (id))
     question_id = answer_list[0][3]
+    query = """SELECT users_id \
+            FROM answer
+            WHERE id = %s""" % (id)
+    user_id = ui.handle_query(query)[0][0]
+    query = """UPDATE users \
+            SET reputation = reputation + 10 \
+            WHERE id = %s""" % user_id
+    ui.handle_query(query)
     return display_question(question_id, count_view=False)
 
 
@@ -93,6 +128,14 @@ def vote_answer_down():
     vote_number = answer_list[0][2] - 1
     ui.update_record('answer', "vote_number=%s" % (vote_number), "id=%s" % (id))
     question_id = answer_list[0][3]
+    query = """SELECT users_id \
+            FROM answer
+            WHERE id = %s""" % (id)
+    user_id = ui.handle_query(query)[0][0]
+    query = """UPDATE users \
+            SET reputation = reputation - 2 \
+            WHERE id = %s""" % user_id
+    ui.handle_query(query)
     return display_question(question_id, count_view=False)
 
 
@@ -151,23 +194,33 @@ def delete_tag(question_id):
 
 @app.route('/question/<question_id>/new-comment')
 def new_question_comment(question_id):
-    return render_template('new_comment.html', question_id=question_id, comment_type="question")
+    users = ui.handle_query("""SELECT user_name FROM users ORDER BY user_name;""")
+    return render_template('new_comment.html', question_id=question_id, comment_type="question", users=users)
 
 
 @app.route('/create_new_comment', methods=['POST'])
 def add_new_question_comment():
-    ui.add_item_to_comment_db('comment', request.form)
+    new_question_comment_user = request.form['new_question_comment_user']
+    user_id = ui.handle_query("""SELECT id FROM users WHERE user_name='{}';""". format(new_question_comment_user))
+    ui.handle_query("""INSERT INTO comment (question_id, answer_id, message, submission_time, users_id)
+                    VALUES ({}, {}, '{}', '{}', {});""".format(request.form['question_id'], 'NULL',
+                    request.form['new_comment_message'], str(datetime.now())[:-7], user_id[0][0]))
     return redirect('/question/' + request.form["question_id"])
 
 
 @app.route('/answer/<answer_id>/new-comment')
 def new_answer_comment(answer_id):
-    return render_template('new_comment.html', answer_id=answer_id, comment_type="answer")
+    users = ui.handle_query("""SELECT user_name FROM users ORDER BY user_name;""")
+    return render_template('new_comment.html', answer_id=answer_id, comment_type="answer", users=users)
 
 
 @app.route('/create_new_answer_comment', methods=['POST'])
 def add_new_answer_comment():
-    ui.add_item_to_comment_db('comment', request.form)
+    new_answer_comment_user = request.form['new_answer_comment_user']
+    user_id = ui.handle_query("""SELECT id FROM users WHERE user_name='{}';""". format(new_answer_comment_user))
+    ui.handle_query("""INSERT INTO comment (answer_id, message, submission_time, users_id)
+                    VALUES ({}, '{}', '{}', {});""".format(request.form['answer_id'],
+                    request.form['new_comment_message'], str(datetime.now())[:-7], user_id[0][0]))
     question_id = ui.get_record_from_sql_db('answer', 'id=%s' % (request.form["answer_id"]))[0][3]
     return redirect('/question/' + str(question_id))
 
@@ -175,3 +228,61 @@ def add_new_answer_comment():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+
+@app.route('/registration')
+def new_registration():
+    return render_template('registration.html')
+
+
+@app.route('/registration/new', methods=['POST'])
+def add_new_registration():
+    user_name = request.form['new_registration']
+    registration_date = datetime.today().strftime("%Y-%m-%d")
+    query = """INSERT INTO users (user_name, registration_date) VALUES ('%s', '%s')""" % (user_name, registration_date)
+    ui.handle_query(query)
+    return redirect('/')
+
+
+@app.route('/tags')
+def tags():
+    tag_list = ui.handle_query("""SELECT t.id, t.name, COUNT(qt.question_id)
+                                  FROM tag t
+                                  LEFT JOIN question_tag qt
+                                  ON qt.tag_id=t.id
+                                  GROUP BY t.id
+                                  ORDER BY COUNT(qt.question_id) DESC;""")
+    return render_template('tag_page.html', tag_list=tag_list)
+    
+
+@app.route('/user/<user_id>')
+def user_page(user_id):
+    user_name = ui.handle_query("""SELECT user_name FROM users WHERE id=%s""" % (user_id))
+    question_list = ui.handle_query("""SELECT id, title
+                                       FROM question
+                                       WHERE users_id='%s';""" % (user_id))
+    answer_list = ui.handle_query("""SELECT a.message, q.id
+                                     FROM answer a
+                                     LEFT JOIN question q ON a.question_id=q.id
+                                     WHERE a.users_id=%s;""" % (user_id))
+    comment_list = ui.handle_query("""SELECT c.message, q.id
+                                     FROM comment c
+                                     LEFT JOIN question q ON c.question_id=q.id
+                                     WHERE c.users_id=%s AND c.question_id IS NOT NULL
+                                     UNION
+                                     SELECT c.message, q.id
+                                     FROM comment c
+                                     LEFT JOIN answer a ON a.id=c.answer_id
+                                     LEFT JOIN question q ON a.question_id=q.id
+                                     WHERE c.users_id=%s AND c.answer_id IS NOT NULL;""" % (user_id, user_id))
+    return render_template('user_page.html', user_name=user_name, question_list=question_list,
+                           answer_list=answer_list, comment_list=comment_list)
+  
+  
+@app.route('/list_users')
+def list_users():
+    query = """SELECT * \
+            FROM users \
+            ORDER BY id"""
+    user_list = ui.handle_query(query)
+    return render_template('list_users.html', user_list=user_list)
