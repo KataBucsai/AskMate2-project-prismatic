@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Tag page</title>
+        <link rel="stylesheet" type="text/css" href="/static/style.css">
+    </head>
+    <body>
+        <h2>Tag page</h2>
+        <table>
+            <tr>
+                        <th>Tag ID</th>
+                        <th>Tag Name</th>
+                        <th>Number of questions marked with this tag</th>
+            </tr>
+            {% for row in tag_list %}
+                <tr>  
+                    {% for data in row%}
+                        <td>{{ data }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <a href="/">Back to the main page</a>
+</html>

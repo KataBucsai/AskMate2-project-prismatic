@@ -244,6 +244,17 @@ def add_new_registration():
     return redirect('/')
 
 
+@app.route('/tags')
+def tags():
+    tag_list = ui.handle_query("""SELECT t.id, t.name, COUNT(qt.question_id)
+                                  FROM tag t
+                                  LEFT JOIN question_tag qt
+                                  ON qt.tag_id=t.id
+                                  GROUP BY t.id
+                                  ORDER BY COUNT(qt.question_id) DESC;""")
+    return render_template('tag_page.html', tag_list=tag_list)
+    
+
 @app.route('/user/<user_id>')
 def user_page(user_id):
     user_name = ui.handle_query("""SELECT user_name FROM users WHERE id=%s""" % (user_id))
@@ -275,4 +286,3 @@ def list_users():
             ORDER BY id"""
     user_list = ui.handle_query(query)
     return render_template('list_users.html', user_list=user_list)
-

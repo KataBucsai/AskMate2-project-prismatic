@@ -37,6 +37,8 @@
             <a href="/delete_tag/{{ id }}?tag_name={{ row[0] }}">x </a><p style="background-color: #aac4ef; display: inline; padding: 2px;">{{ row[0] }}</p>
         {% endfor %}
     <br>
+    <br>
+    <a href="/tags">Go to tag page</a>
     <hr>
     <br>
     <form action="/question/{{ id }}/new-comment">
