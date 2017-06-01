@@ -19,9 +19,7 @@
             </p>
         {% endif %}
 
-    <form action="/">
-        <input type="submit" value="Back to questions" >
-    </form>
+        <a href="/" class="button_like_link" >Back to the index page</a>
 
         {% for row in search_results %}
             <h4><a href='/question/{{ row[0] }}'>{{ row[13]|safe }}</a></h4>
@@ -39,7 +37,7 @@
             </p>
             <p>
                 {% if row[6] == None %}
-                    <td><a href='/add_image/{{row[0]}}'>Add image</td>
+                    <td><a href='/add_image/{{row[0]}}' class="button_like_link">Add image</a></td>
                 {% else %}
                     <td><a href='static/uploads/img/{{row[6]}}' ><img src='static/uploads/img/{{row[6]}}' width = 40px>
                 {% endif %}
