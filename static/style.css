@@ -53,3 +53,19 @@ input[type=submit], select {
     -webkit-border-radius: 5px;
     border-radius: 5px; 
 }
+
+table {
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table, th, td {
+    border: 1px solid;
+    padding: 5px;
+}
+
+th, tfoot, tfoot td {
+    text-align: center;
+    font-weight: bold;
+}
