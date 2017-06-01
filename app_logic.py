@@ -244,6 +244,30 @@ def add_new_registration():
     return redirect('/')
 
 
+@app.route('/user/<user_id>')
+def user_page(user_id):
+    user_name = ui.handle_query("""SELECT user_name FROM users WHERE id=%s""" % (user_id))
+    question_list = ui.handle_query("""SELECT id, title
+                                       FROM question
+                                       WHERE users_id='%s';""" % (user_id))
+    answer_list = ui.handle_query("""SELECT a.message, q.id
+                                     FROM answer a
+                                     LEFT JOIN question q ON a.question_id=q.id
+                                     WHERE a.users_id=%s;""" % (user_id))
+    comment_list = ui.handle_query("""SELECT c.message, q.id
+                                     FROM comment c
+                                     LEFT JOIN question q ON c.question_id=q.id
+                                     WHERE c.users_id=%s AND c.question_id IS NOT NULL
+                                     UNION
+                                     SELECT c.message, q.id
+                                     FROM comment c
+                                     LEFT JOIN answer a ON a.id=c.answer_id
+                                     LEFT JOIN question q ON a.question_id=q.id
+                                     WHERE c.users_id=%s AND c.answer_id IS NOT NULL;""" % (user_id, user_id))
+    return render_template('user_page.html', user_name=user_name, question_list=question_list,
+                           answer_list=answer_list, comment_list=comment_list)
+  
+  
 @app.route('/list_users')
 def list_users():
     query = """SELECT * \
@@ -251,3 +275,4 @@ def list_users():
             ORDER BY id"""
     user_list = ui.handle_query(query)
     return render_template('list_users.html', user_list=user_list)
+
