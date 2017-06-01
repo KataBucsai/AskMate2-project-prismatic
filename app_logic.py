@@ -18,13 +18,18 @@ def list_questions():
 
 @app.route('/create_new_question', methods=['POST'])
 def create_new_question():
-    ui.add_item_to_sql_db('question', request.form)
+    new_question_user = request.form['new_question_user']
+    user_id = ui.handle_query("""SELECT id FROM users WHERE user_name='{}';""". format(new_question_user))
+    ui.handle_query("""INSERT INTO question (submission_time, view_number, vote_number, title, message, users_id) 
+                    VALUES ('{}', {}, {}, '{}', '{}', {});""".format(
+                    str(datetime.now())[:-7], 0, 0, request.form['new_question_title'], request.form['new_question_message'], user_id[0][0]))
     return redirect('/')
 
 
 @app.route('/question/new')
 def new_question():
-    return render_template('new_question.html')
+    users = ui.handle_query("""SELECT user_name FROM users ORDER BY user_name;""")
+    return render_template('new_question.html', users=users)
 
 
 @app.route('/question/<id>')
