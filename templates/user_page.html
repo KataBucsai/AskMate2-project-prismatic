@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>User page</title>
+        <link rel="stylesheet" type="text/css" href="/static/style.css">
+    </head>
+    <body>
+        <h2>User page of {{ user_name[0][0] }}</h2>
+        <h3>Questions which were asked by this user</h3>
+        {% if question_list %}    
+            <table>
+                <tr>
+                    <th>Question title</th>
+                </tr>
+                {% for row in question_list %}
+                    <tr>  
+                        <td><a href="/question/{{ row[0] }}">{{ row[1] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No results</p>
+        {% endif %}
+        <hr>
+        <h3>Answers which were posted by this user</h3>
+        {% if answer_list %}
+            <table>
+                <tr>
+                    <th>Answer message</th>
+                </tr>
+                {% for row in answer_list %}
+                    <tr>  
+                        <td><a href="/question/{{ row[1] }}">{{ row[0] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No results</p>
+        {% endif %}
+        <hr>
+        <h3>Comments which were posted by this user</h3>
+        {% if comment_list %}
+            <table>
+                <tr>
+                    <th>Comment message</th>
+                </tr>
+                {% for row in comment_list %}
+                    <tr>  
+                        <td><a href="/question/{{ row[1] }}">{{ row[0] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No results</p>
+        {% endif %}
+        <hr>
+        <a href="/">Back to the index page</a>
+    </body>
+</html>
